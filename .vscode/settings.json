@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "*.js": "javascriptreact",
+    "*.jsx": "javascriptreact"
+  },
+  "js/ts.validate.enabled": false,
+  "editor.formatOnSave": false,
+  "editor.formatOnType": false,
+  "editor.formatOnPaste": false,
+  "editor.defaultFormatter": null,
+  "prettier.enable": false,
+  "editor.autoIndent": "none",
+}

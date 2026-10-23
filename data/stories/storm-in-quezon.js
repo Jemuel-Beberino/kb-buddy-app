@@ -1,0 +1,178 @@
+// data/stories/storm-in-quezon.js
+// Story 7: The Storm in Quezon / Ang Bagyo sa Quezon
+
+export const stormInQuezon = {
+  id: 'storm_in_quezon',
+  title: 'The Storm in Quezon',
+  titleBisaya: 'Ang Bagyo sa Quezon',
+  category: 'values',
+  categoryLabel: 'Values',
+  categoryColor: '#0D9488',
+  gradientColors: ['#0D9488', '#10B981'],
+  icon: 'weather-lightning-rainy',
+  readTime: '8 min',
+  pageCount: 8,
+  vocabularyCount: 6,
+  status: 'not-started',
+  description: 'A girl learns the importance of preparing early and following safety warnings during a storm.',
+  gradeLevel: 6,
+  setting: 'Barangay Quezon, Tagbina, Surigao del Sur',
+  learningCompetencies: [
+    'Identifying the Main Idea',
+    'Understanding Cause and Effect',
+    'Analyzing Character Actions',
+  ],
+  pages: [
+    {
+      pageNumber: 1,
+      image: 'storm-in-quezon/page1.png',
+      englishText: 'It was a quiet afternoon in Barangay Quezon, Tagbina, Surigao del Sur. Twelve-year-old Ana was helping her mother prepare dinner when dark clouds slowly covered the sky. The wind became stronger, and the leaves of the coconut trees began to move wildly. Ana looked outside and noticed that the sky was turning gray. "Ma, I think a [storm] is coming," Ana said. Her mother nodded. "Then we should prepare now. We should not wait until the rain becomes strong."',
+      bisayaText: 'Usa ka hilom nga hapon sa Barangay Quezon, Tagbina, Surigao del Sur. Si Ana, dose anyos, mitabang sa iyang mama sa pag-andam sa panihapon sa dihang hinay-hinay nga natabonan sa itom nga mga panganod ang langit. Misamot ang kusog sa hangin, ug kusog nga nagkiay-kiay ang mga dahon sa mga punoan sa niyog. Mitan-aw si Ana sa gawas ug namatikdan niya nga nagngitngit ang langit. "Ma, murag moabot ang bagyo," miingon si Ana. Milingo ang iyang mama. "Busa kinahanglan mangandam na ta karon. Dili ta angay maghulat nga kusog na kaayo ang ulan."',
+      vocabulary: [
+        {
+          word: 'storm',
+          partOfSpeech: 'noun',
+          englishDef: 'A violent weather condition with strong winds and heavy rain.',
+          bisayaDef: 'Bagyo — kusog nga hangin ug ulan.',
+          example: 'The storm brought heavy rain to the village.',
+        },
+      ],
+    },
+    {
+      pageNumber: 2,
+      image: 'storm-in-quezon/page2.png',
+      englishText: 'Ana wanted to continue watching television, but her mother reminded her that [preparation] was important. "Let us check the weather update first," her mother said. They listened to the radio and learned that a strong storm was expected to pass near their area. The barangay officials also advised families to [secure] their homes and prepare [emergency supplies]. Ana realized that the warning should be taken seriously.',
+      bisayaText: 'Gusto pa unta ni Ana nga magtan-aw og telebisyon, apan gipahinumdoman siya sa iyang mama nga importante ang pagpangandam. "Atong susihon una ang weather update," miingon ang iyang mama. Namati sila sa radyo ug nahibaloan nila nga adunay kusog nga bagyo nga moagi duol sa ilang lugar. Gipahibalo usab sa mga opisyal sa barangay ang mga pamilya nga lig-onon ang ilang mga balay ug mangandam og emergency supplies. Nasabtan ni Ana nga kinahanglan seryosohon ang maong pahimangno.',
+      vocabulary: [
+        {
+          word: 'preparation',
+          partOfSpeech: 'noun',
+          englishDef: 'The act of getting ready for something.',
+          bisayaDef: 'Pagpangandam — paghimo og mga pagsunod aron andam.',
+          example: 'Preparation is key to staying safe.',
+        },
+        {
+          word: 'secure',
+          partOfSpeech: 'verb',
+          englishDef: 'To make safe or protect from danger.',
+          bisayaDef: 'Lig-onon — himoong luwas o panalipdan.',
+          example: 'They secured the windows before the storm.',
+        },
+        {
+          word: 'emergency supplies',
+          partOfSpeech: 'noun',
+          englishDef: 'Items kept ready for use in an emergency.',
+          bisayaDef: 'Mga gamit alang sa emerhensya.',
+          example: 'The family prepared emergency supplies.',
+        },
+      ],
+    },
+    {
+      pageNumber: 3,
+      image: 'storm-in-quezon/page3.png',
+      englishText: 'Ana and her mother began preparing their home. They closed the windows, secured loose objects outside, and moved important things to a higher place. Ana also helped prepare a flashlight, batteries, drinking water, food, medicine, and important documents. Her younger brother wanted to play outside before the rain started. "Can I still play for a while?" he asked. Ana shook her head. "No. It is safer to stay inside because the wind is getting stronger."',
+      bisayaText: 'Nagsugod sila ni Ana ug iyang mama sa pagpangandam sa ilang balay. Ilang gisirado ang mga bintana, gipahimutang og tarong ang mga butang sa gawas, ug gibutang ang importanteng mga gamit sa mas taas nga dapit. Mitabang usab si Ana sa pag-andam og flashlight, baterya, tubig nga imnon, pagkaon, tambal, ug importanteng mga dokumento. Gusto pa unta magdula sa gawas ang iyang manghod sa wala pa magsugod ang ulan. "Pwede pa ko magdula kadiyot?" pangutana niya. Milingo si Ana. "Dili na. Mas luwas nga magpabilin ta sa sulod kay nagkakusog ang hangin."',
+      vocabulary: [],
+    },
+    {
+      pageNumber: 4,
+      image: 'storm-in-quezon/page4.png',
+      englishText: 'A few hours later, heavy rain began to fall. The wind became louder, and the trees swayed from side to side. Ana heard a loud sound outside. "What was that?" she asked. Her mother carefully looked through the window. A large branch had fallen near their fence. "Good thing we secured the things outside earlier," her mother said. Ana understood that their preparation had helped protect their home.',
+      bisayaText: 'Paglabay sa pipila ka oras, kusog nga mibundak ang ulan. Misamot usab ang kusog sa hangin ug nagkiay-kiay ang mga kahoy. Nakabati si Ana og kusog nga tingog sa gawas. "Unsa to?" iyang pangutana. Maampingong mitan-aw ang iyang mama sa bintana. Usa ka dakong sanga ang nangatagak duol sa ilang koral. "Maayo na lang nga gipanglig-on nato ang mga butang sa gawas ganina," miingon ang iyang mama. Nasabtan ni Ana nga ang ilang pagpangandam nakatabang sa pagpanalipod sa ilang balay.',
+      vocabulary: [],
+    },
+    {
+      pageNumber: 5,
+      image: 'storm-in-quezon/page5.png',
+      englishText: 'During the storm, the electricity went out. The house became dark, but Ana remained calm. She remembered where they had placed the flashlight and emergency supplies. "Everyone, stay together," Ana said. "We have enough water and food, and our flashlight is ready." Her mother smiled proudly. Ana was no longer simply following instructions. She was now helping her family stay safe.',
+      bisayaText: 'Atol sa bagyo, napalong ang kuryente. Nangitngit ang balay, apan nagpabiling kalmado si Ana. Nahinumdom siya kung asa nila gibutang ang flashlight ug emergency supplies. "Tanan, magpabilin ta nga magkuyog," miingon si Ana. "Aduna tay igo nga tubig ug pagkaon, ug andam na ang atong flashlight." Mipahiyom ang iyang mama. Si Ana dili na lamang nagsunod sa mga sugo. Mitabang na usab siya sa pagpanalipod sa ilang pamilya.',
+      vocabulary: [],
+    },
+    {
+      pageNumber: 6,
+      image: 'storm-in-quezon/page6.png',
+      englishText: 'The next morning, the rain became lighter. Ana and her family stayed inside until the weather was safe. When they finally went outside, they saw fallen branches and some damaged plants around their home. Their neighbor\'s roof had also been slightly damaged. Ana helped her family clean the yard. She also reminded her younger brother not to touch fallen electrical wires or go near flooded areas.',
+      bisayaText: 'Pagkasunod buntag, nihinay ang ulan. Nagpabilin gihapon sila Ana sulod sa balay hangtod nga luwas na ang panahon. Sa dihang nakagawas na sila, nakita nila ang mga natagak nga sanga ug pipila ka nadaot nga mga tanom palibot sa ilang balay. Ang atop sa ilang silingan gamay usab nga nadaot. Mitabang si Ana sa iyang pamilya sa paglimpyo sa palibot sa balay. Gipahinumdoman usab niya ang iyang manghod nga dili hikapon ang natagak nga mga wire sa kuryente ug dili moduol sa mga lugar nga gibahaan.',
+      vocabulary: [],
+    },
+    {
+      pageNumber: 7,
+      image: 'storm-in-quezon/page7.png',
+      englishText: 'Later that day, the barangay officials announced that families should continue checking their surroundings because more rain could still come. Ana listened carefully. She realized that being prepared did not mean being afraid. It meant knowing what to do before, during, and after a storm. She also learned that following safety warnings could protect not only one family but the whole community.',
+      bisayaText: 'Niadtong adlawa, gipahibalo sa mga opisyal sa barangay nga kinahanglan ipadayon sa mga pamilya ang pagsusi sa ilang palibot kay posible pa nga moabot ang dugang ulan. Namati pag-ayo si Ana. Nasabtan niya nga ang pagpangandam dili pasabot nga mahadlok. Nagpasabot kini nga nahibalo ta kung unsay buhaton sa wala pa, panahon sa, ug human sa bagyo. Nakat-on usab siya nga ang pagsunod sa mga pahimangno sa kaluwasan makapanalipod dili lamang sa usa ka pamilya kondili sa tibuok komunidad.',
+      vocabulary: [],
+    },
+    {
+      pageNumber: 8,
+      image: 'storm-in-quezon/page8.png',
+      englishText: 'That evening, Ana looked at the dark clouds slowly moving away from Quezon. She felt thankful that her family had stayed safe. She remembered what her mother had told her: "A storm may be difficult to control, but we can control how we prepare for it." Ana smiled. From that day on, she understood the importance of listening to warnings, preparing early, and making safe decisions. She knew that being [responsible] during a storm could save lives.',
+      bisayaText: 'Niadtong gabhiona, mitan-aw si Ana sa itom nga mga panganod nga hinay-hinay nang mipahilayo sa Quezon. Nagpasalamat siya nga luwas ang iyang pamilya. Nahinumdom siya sa gisulti sa iyang mama: "Lisod kontrolon ang bagyo, apan mahimo nato kontrolon kung unsaon nato pagpangandam niini." Mipahiyom si Ana. Sukad niadtong adlawa, nasabtan niya ang importansya sa pagpaminaw sa mga pahimangno, sayong pagpangandam, ug paghimo og luwas nga mga desisyon. Nasabtan niya nga ang pagkareponsable panahon sa bagyo mahimong makaluwas og kinabuhi.',
+      vocabulary: [
+        {
+          word: 'responsible',
+          partOfSpeech: 'adjective',
+          englishDef: 'Able to make good decisions and be trusted.',
+          bisayaDef: 'Responsable — may kaarang mohimo og maayo nga desisyon.',
+          example: 'She is responsible for her younger brother.',
+        },
+      ],
+    },
+  ],
+  quiz: [
+    {
+      question: 'What is the main idea of the story?',
+      questionBisaya: 'Unsa ang panguna nga ideya sa istorya?',
+      choices: [
+        'Storms are always fun for children.',
+        'Preparing early and following safety warnings help keep people safe during a storm.',
+        'People should go outside to watch a storm.',
+        'Emergency supplies are not important during storms.',
+      ],
+      correctAnswerIndex: 1,
+    },
+    {
+      question: 'Where is the story set?',
+      questionBisaya: 'Asa nahitabo ang istorya?',
+      choices: [
+        'Barangay Quezon, Tagbina, Surigao del Sur',
+        'Barangay San Isidro, Tandag City',
+        'Barangay Poblacion, Bislig City',
+        'Barangay Mabua, Surigao City',
+      ],
+      correctAnswerIndex: 0,
+    },
+    {
+      question: 'What signs showed Ana that a storm was coming?',
+      questionBisaya: 'Unsa nga mga timailhan ang nagpakita ni Ana nga moabot ang bagyo?',
+      choices: [
+        'The sun became brighter, and the air became warmer.',
+        'The birds sang loudly, and the sky became clear.',
+        'Dark clouds covered the sky, the wind grew stronger, and the coconut leaves moved wildly.',
+        'The weather became sunny, and the wind stopped blowing.',
+      ],
+      correctAnswerIndex: 2,
+    },
+    {
+      question: 'What did Ana and her mother do before the storm?',
+      questionBisaya: 'Unsa ang gibuhat ni Ana ug sa iyang mama sa wala pa ang bagyo?',
+      choices: [
+        'They went outside to play.',
+        'They ignored the weather update.',
+        'They waited for the storm before preparing.',
+        'They checked the weather, closed the windows, secured loose objects, and prepared emergency supplies.',
+      ],
+      correctAnswerIndex: 3,
+    },
+    {
+      question: 'Why did Ana tell her younger brother to stay inside?',
+      questionBisaya: 'Nganong giingnan ni Ana ang iyang manghod nga magpabilin sa sulod?',
+      choices: [
+        'Because he needed to finish his homework.',
+        'Because the wind was getting stronger, and staying indoors was safer.',
+        'Because she wanted to play alone.',
+        'Because it was time to go to sleep.',
+      ],
+      correctAnswerIndex: 1,
+    },
+  ],
+};
