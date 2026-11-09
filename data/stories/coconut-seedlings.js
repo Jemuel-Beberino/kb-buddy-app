@@ -114,8 +114,15 @@ export const coconutSeedlings = {
       ],
     },
   ],
-  quiz: [
+    quiz: [
     {
+      questionType: 'fill_in_the_blank',
+      question: 'Cardo was planting young coconut ________.',
+      questionBisaya: 'Si Cardo nagtanom og batan-on nga ________ sa niyog.',
+      correctText: 'seedlings', // The answer we will check against
+    },
+    {
+      questionType: 'multiple_choice',
       question: 'Who followed his father to the coconut farm in Barangay Quezon, Tagbina?',
       questionBisaya: 'Kinsa ang misunod sa iyang amahan ngadto sa umahan sa niyog sa Barangay Quezon, Tagbina?',
       choices: [
