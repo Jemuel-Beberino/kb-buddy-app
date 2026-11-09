@@ -6,20 +6,20 @@ import * as SQLite from 'expo-sqlite';
 let dbInstance = null;
 
 export async function getDatabase() {
-    if (dbInstance) return dbInstance;
+  if (dbInstance) return dbInstance;
 
-    console.log('🔧 Initializing database...');
+  console.log('🔧 Initializing database...');
 
-    if (typeof SQLite.openDatabaseAsync !== 'function') {
-        throw new Error(
-            'expo-sqlite is not properly installed. Run: npx expo install expo-sqlite'
-        );
-    }
+  if (typeof SQLite.openDatabaseAsync !== 'function') {
+    throw new Error(
+      'expo-sqlite is not properly installed. Run: npx expo install expo-sqlite'
+    );
+  }
 
-    dbInstance = await SQLite.openDatabaseAsync('kbbuddy.db');
-    console.log('🔧 Database opened');
+  dbInstance = await SQLite.openDatabaseAsync('kbbuddy.db');
+  console.log('🔧 Database opened');
 
-    await dbInstance.execAsync(`
+  await dbInstance.execAsync(`
     CREATE TABLE IF NOT EXISTS progress (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       learner_id TEXT NOT NULL,
@@ -32,6 +32,7 @@ export async function getDatabase() {
       last_attempt_at TEXT NOT NULL,
       UNIQUE(learner_id, story_id)
     );
+
     CREATE TABLE IF NOT EXISTS custom_stories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
@@ -41,8 +42,14 @@ export async function getDatabase() {
       bisayaText TEXT,
       createdAt TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS learners (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      pin TEXT NOT NULL
+    );
   `);
 
-    console.log('🔧 Table ready');
-    return dbInstance;
+  console.log('🔧 Tables ready');
+  return dbInstance;
 }

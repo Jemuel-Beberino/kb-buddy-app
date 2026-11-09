@@ -1,16 +1,8 @@
 // screens/HomeScreen.js
-
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Image,
-  StatusBar,
+  StyleSheet, Text, View, FlatList, TouchableOpacity,
+  TextInput, ScrollView, Image, StatusBar,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -22,7 +14,9 @@ import { storyCovers } from '../data/storyImages';
 import { getCustomStories } from '../database/storyService';
 
 export default function HomeScreen({ route, navigation }) {
-  const learnerName = route?.params?.learnerName || 'Sofia';
+  const learnerName = route?.params?.learnerName || 'Learner';
+  const learnerId = route?.params?.learnerId || 'KS-12345';
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [customStories, setCustomStories] = useState([]);
@@ -67,19 +61,18 @@ export default function HomeScreen({ route, navigation }) {
         style={styles.storyCard}
         activeOpacity={0.9}
         onPress={() =>
-          navigation.navigate('StoryReader', { storyId: item.id, title: item.title })
+          navigation.navigate('StoryReader', {
+            storyId: item.id,
+            title: item.title,
+            learnerId: learnerId, // Passed here
+          })
         }
       >
         <View style={styles.coverWrapper}>
           {coverImage ? (
             <Image source={coverImage} style={styles.coverImage} resizeMode="cover" />
           ) : (
-            <LinearGradient
-              colors={item.gradientColors}
-              style={styles.coverImage}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
+            <LinearGradient colors={item.gradientColors} style={styles.coverImage}>
               <MaterialCommunityIcons name={item.icon} size={44} color="rgba(255,255,255,0.95)" />
             </LinearGradient>
           )}
@@ -142,7 +135,7 @@ export default function HomeScreen({ route, navigation }) {
 
         <View style={styles.pageHeader}>
           <Text style={styles.pageTitle}>Mga Istorya</Text>
-          <Text style={styles.pageSubtitle}>Choose a story. Discover new words.</Text>
+          <Text style={styles.pageSubtitle}>Hi, {learnerName}! Choose a story.</Text>
         </View>
 
         <View style={styles.searchContainer}>
@@ -191,61 +184,31 @@ export default function HomeScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  appBar: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: spacing.xl, paddingVertical: spacing.md,
-  },
+  appBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.xl, paddingVertical: spacing.md },
   appBarLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  miniOwl: {
-    width: 32, height: 32, borderRadius: radius.pill,
-    backgroundColor: colors.primarySoft, justifyContent: 'center', alignItems: 'center',
-  },
+  miniOwl: { width: 32, height: 32, borderRadius: radius.pill, backgroundColor: colors.primarySoft, justifyContent: 'center', alignItems: 'center' },
   miniOwlEmoji: { fontSize: 18 },
   appBarTitle: { fontSize: typography.heading3, fontWeight: '700', color: colors.primary },
-  offlineModePill: {
-    flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: colors.surface, paddingHorizontal: spacing.md,
-    paddingVertical: 6, borderRadius: radius.pill,
-    borderWidth: 1, borderColor: colors.primary,
-  },
+  offlineModePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.surface, paddingHorizontal: spacing.md, paddingVertical: 6, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.primary },
   offlineModePillText: { fontSize: typography.tiny, fontWeight: '600', color: colors.primary },
   pageHeader: { paddingHorizontal: spacing.xl, paddingTop: spacing.lg, paddingBottom: spacing.md },
   pageTitle: { fontSize: typography.displayMedium, fontWeight: '700', color: colors.textPrimary },
   pageSubtitle: { fontSize: typography.body, color: colors.textSecondary, marginTop: 4 },
-  searchContainer: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface,
-    borderRadius: radius.md, paddingHorizontal: spacing.md,
-    marginHorizontal: spacing.xl, marginTop: spacing.md, height: 48,
-    borderWidth: 1, borderColor: colors.border, gap: spacing.sm,
-  },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: spacing.md, marginHorizontal: spacing.xl, marginTop: spacing.md, height: 48, borderWidth: 1, borderColor: colors.border, gap: spacing.sm },
   searchInput: { flex: 1, fontSize: typography.body, color: colors.textPrimary, paddingVertical: 0 },
   filterRow: { paddingHorizontal: spacing.xl, marginTop: spacing.md, marginBottom: spacing.sm },
   filterScroll: { gap: spacing.sm, paddingRight: spacing.md },
-  filterPill: {
-    paddingHorizontal: spacing.lg, paddingVertical: spacing.sm,
-    borderRadius: radius.pill, backgroundColor: colors.surface,
-    borderWidth: 1, borderColor: colors.border,
-  },
+  filterPill: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: radius.pill, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
   filterPillActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   filterPillText: { fontSize: typography.bodySmall, fontWeight: '600', color: colors.textSecondary },
   filterPillTextActive: { color: colors.textLight },
   listContainer: { paddingHorizontal: spacing.xl, paddingTop: spacing.md, paddingBottom: spacing.xxl },
-  storyCard: {
-    flexDirection: 'row', backgroundColor: colors.surface, borderRadius: radius.xl,
-    marginBottom: spacing.lg, overflow: 'hidden', height: 170, ...shadows.cardLarge,
-  },
+  storyCard: { flexDirection: 'row', backgroundColor: colors.surface, borderRadius: radius.xl, marginBottom: spacing.lg, overflow: 'hidden', height: 170, ...shadows.cardLarge },
   coverWrapper: { width: 128, position: 'relative' },
   coverImage: { width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
-  offlineBadge: {
-    position: 'absolute', top: spacing.sm, right: spacing.sm,
-    width: 22, height: 22, borderRadius: radius.pill,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center', alignItems: 'center',
-  },
+  offlineBadge: { position: 'absolute', top: spacing.sm, right: spacing.sm, width: 22, height: 22, borderRadius: radius.pill, backgroundColor: 'rgba(0, 0, 0, 0.4)', justifyContent: 'center', alignItems: 'center' },
   storyInfo: { flex: 1, padding: spacing.lg, justifyContent: 'space-between' },
-  storyTopRow: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.xs,
-  },
+  storyTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.xs },
   categoryBadge: { paddingHorizontal: spacing.sm, paddingVertical: 3, borderRadius: radius.sm },
   categoryBadgeText: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
   statusBadge: { paddingHorizontal: spacing.sm, paddingVertical: 3, borderRadius: radius.pill, backgroundColor: colors.surfaceMuted },

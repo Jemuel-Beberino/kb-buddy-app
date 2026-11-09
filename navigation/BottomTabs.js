@@ -1,6 +1,4 @@
 // navigation/BottomTabs.js
-// Bottom tab navigation for the learner experience
-
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,7 +10,9 @@ import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomTabs() {
+export default function BottomTabs({ route }) {
+  const { learnerId, learnerName } = route.params || {};
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -46,10 +46,26 @@ export default function BottomTabs() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Stories" component={HomeScreen} />
-      <Tab.Screen name="Progress" component={ProgressScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen} 
+        initialParams={{ learnerId, learnerName }}
+      />
+      <Tab.Screen 
+        name="Stories" 
+        component={HomeScreen} 
+        initialParams={{ learnerId, learnerName }}
+      />
+      <Tab.Screen 
+        name="Progress" 
+        component={ProgressScreen} 
+        initialParams={{ learnerId }}
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen} 
+        initialParams={{ learnerId, learnerName }}
+      />
     </Tab.Navigator>
   );
 }

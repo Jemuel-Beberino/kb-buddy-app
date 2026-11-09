@@ -1,24 +1,54 @@
 // screens/QuizScreen.js
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity, ScrollView, 
-  StatusBar, TextInput, KeyboardAvoidingView, Platform
+  StatusBar, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing, radius, shadows } from '../styles/theme';
 import { allStories } from '../data/stories';
+import { getCustomStories } from '../database/storyService';
 import { saveQuizResult } from '../database/progressService';
 
-const LEARNER_ID = 'KS-12345';
-
 export default function QuizScreen({ route, navigation }) {
-  const { storyId } = route.params || {};
-  const story = allStories.find((s) => s.id === storyId);
-
+  const { storyId, learnerId } = route.params || {}; // Extract learnerId
+  
+  const hardcodedStory = allStories.find((s) => s.id === storyId);
+  
+  const [story, setStory] = useState(hardcodedStory || null);
+  const [loading, setLoading] = useState(!hardcodedStory);
+  
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({}); // Stores both MC indices and FIB strings
+  const [answers, setAnswers] = useState({}); 
   const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    if (story) return;
+
+    async function fetchCustom() {
+      try {
+        const customs = await getCustomStories();
+        const found = customs.find((s) => s.id === storyId);
+        setStory(found || null);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCustom();
+  }, [storyId, story]);
+
+  if (loading) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
 
   if (!story || !story.quiz || story.quiz.length === 0) {
     return (
@@ -40,7 +70,6 @@ export default function QuizScreen({ route, navigation }) {
   const isFirst = currentQuestion === 0;
   const isLast = currentQuestion === questions.length - 1;
   
-  // Check if the current question has been answered (either index or text)
   const currentAnswer = answers[currentQuestion];
   const hasAnswered = currentAnswer !== undefined && currentAnswer !== '';
 
@@ -63,13 +92,8 @@ export default function QuizScreen({ route, navigation }) {
     return correct;
   }, [answers, questions]);
 
-  const handleAnswerMC = (index) => {
-    setAnswers({ ...answers, [currentQuestion]: index });
-  };
-
-  const handleAnswerText = (text) => {
-    setAnswers({ ...answers, [currentQuestion]: text });
-  };
+  const handleAnswerMC = (index) => setAnswers({ ...answers, [currentQuestion]: index });
+  const handleAnswerText = (text) => setAnswers({ ...answers, [currentQuestion]: text });
 
   const goToPrevious = () => {
     if (!isFirst) setCurrentQuestion(currentQuestion - 1);
@@ -89,7 +113,7 @@ export default function QuizScreen({ route, navigation }) {
 
       try {
         await saveQuizResult({
-          learnerId: LEARNER_ID,
+          learnerId: learnerId || 'KS-12345', // Use dynamic ID
           storyId: story.id,
           storyTitle: story.title,
           quizScore: finalScore,
@@ -104,7 +128,6 @@ export default function QuizScreen({ route, navigation }) {
     }
   };
 
-  // --- RESULTS VIEW ---
   if (showResults) {
     const totalQuestions = questions.length;
     const percentage = Math.round((score / totalQuestions) * 100);
@@ -137,7 +160,6 @@ export default function QuizScreen({ route, navigation }) {
     );
   }
 
-  // --- QUESTION VIEW ---
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container} edges={['top']}>
@@ -165,7 +187,6 @@ export default function QuizScreen({ route, navigation }) {
               {question.questionBisaya && <Text style={styles.questionTextBisaya}>{question.questionBisaya}</Text>}
             </View>
 
-            {/* RENDER MULTIPLE CHOICE */}
             {question.questionType !== 'fill_in_the_blank' && (
               <View style={styles.choicesContainer}>
                 {question.choices.map((choice, index) => {
@@ -188,7 +209,6 @@ export default function QuizScreen({ route, navigation }) {
               </View>
             )}
 
-            {/* RENDER FILL IN THE BLANK */}
             {question.questionType === 'fill_in_the_blank' && (
               <View style={styles.fibContainer}>
                 <Text style={styles.fibInstruction}>Type your answer below:</Text>
@@ -263,4 +283,8 @@ const styles = StyleSheet.create({
   primaryButtonText: { color: colors.textLight, fontSize: typography.bodyLarge, fontWeight: '700' },
   secondaryButton: { width: '100%', backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.primary, padding: spacing.lg, borderRadius: radius.pill, alignItems: 'center' },
   secondaryButtonText: { color: colors.primary, fontSize: typography.bodyLarge, fontWeight: '700' },
+  errorContent: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.lg },
+  errorText: { fontSize: typography.body, color: colors.textSecondary, marginBottom: spacing.lg },
+  navButton: { backgroundColor: colors.primary, paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radius.pill },
+  navButtonText: { color: colors.textLight, fontSize: typography.body, fontWeight: '700' },
 });
