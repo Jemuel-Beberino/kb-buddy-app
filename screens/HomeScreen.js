@@ -12,6 +12,23 @@ import { colors, typography, spacing, radius, shadows } from '../styles/theme';
 import { allStories, categories } from '../data/stories';
 import { storyCovers } from '../data/storyImages';
 import { getCustomStories } from '../database/storyService';
+import { getLearnerStoryStatuses } from '../database/progressService';
+
+// Soft teal-tinted shadows so cards and covers look like they float
+const floatingCard = {
+  shadowColor: colors.primaryDark,
+  shadowOffset: { width: 0, height: 10 },
+  shadowOpacity: 0.18,
+  shadowRadius: 18,
+  elevation: 8,
+};
+const floatingCover = {
+  shadowColor: '#0F172A',
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.3,
+  shadowRadius: 10,
+  elevation: 6,
+};
 
 export default function HomeScreen({ route, navigation }) {
   const learnerName = route?.params?.learnerName || 'Learner';
@@ -20,15 +37,21 @@ export default function HomeScreen({ route, navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [customStories, setCustomStories] = useState([]);
+  const [storyStatuses, setStoryStatuses] = useState({});
 
   useFocusEffect(
     useCallback(() => {
-      async function loadCustom() {
+      async function loadData() {
+        // Fetch custom stories
         const stories = await getCustomStories();
         setCustomStories(stories);
+        
+        // Fetch learner's status for all stories
+        const statuses = await getLearnerStoryStatuses(learnerId);
+        setStoryStatuses(statuses);
       }
-      loadCustom();
-    }, [])
+      loadData();
+    }, [learnerId])
   );
 
   const combinedStories = [...customStories, ...allStories];
@@ -55,60 +78,103 @@ export default function HomeScreen({ route, navigation }) {
 
   const renderStoryCard = ({ item }) => {
     const coverImage = getCoverImage(item);
+    
+    // Determine status dynamically from the database
+    const status = storyStatuses[item.id] || 'not-started';
+    
+    // Style variables based on status
+    let statusText = 'Not Started';
+    let statusIcon = 'sparkles';
+    let statusIconColor = 'rgba(255,255,255,0.9)';
+    let actionText = 'Read Story';
+    let actionIcon = 'book';
+
+    if (status === 'completed') {
+      statusText = 'Completed';
+      statusIcon = 'checkmark-circle';
+      statusIconColor = '#34D399'; // green
+      actionText = 'Read Again';
+      actionIcon = 'refresh';
+    } else if (status === 'in-progress') {
+      statusText = 'In Progress';
+      statusIcon = 'bookmark';
+      statusIconColor = '#FBBF24'; // yellow
+      actionText = 'Continue Reading';
+      actionIcon = 'play';
+    }
 
     return (
       <TouchableOpacity
         style={styles.storyCard}
-        activeOpacity={0.9}
+        activeOpacity={0.92}
         onPress={() =>
           navigation.navigate('StoryReader', {
             storyId: item.id,
             title: item.title,
-            learnerId: learnerId, // Passed here
+            learnerId: learnerId, 
           })
         }
       >
-        <View style={styles.coverWrapper}>
-          {coverImage ? (
-            <Image source={coverImage} style={styles.coverImage} resizeMode="cover" />
-          ) : (
-            <LinearGradient colors={item.gradientColors} style={styles.coverImage}>
-              <MaterialCommunityIcons name={item.icon} size={44} color="rgba(255,255,255,0.95)" />
-            </LinearGradient>
-          )}
-          <View style={styles.offlineBadge}>
-            <Ionicons name="cloud-done" size={12} color={colors.textLight} />
+        {/* "Book cover": shadow wrapper + clipped inner so the cover floats */}
+        <View style={styles.coverShadow}>
+          <View style={styles.coverClip}>
+            {coverImage ? (
+              <Image source={coverImage} style={styles.coverImage} resizeMode="cover" />
+            ) : (
+              <LinearGradient colors={item.gradientColors} style={styles.coverImage}>
+                <MaterialCommunityIcons name={item.icon} size={48} color="rgba(255,255,255,0.95)" />
+              </LinearGradient>
+            )}
+
+            {/* bottom scrim so white text stays readable on any cover */}
+            <LinearGradient
+              colors={['rgba(15,23,42,0)', 'rgba(15,23,42,0.88)']}
+              style={styles.coverScrim}
+              pointerEvents="none"
+            />
+
+            <View style={styles.statusPill}>
+              <Ionicons name={statusIcon} size={12} color={statusIconColor} />
+              <Text style={styles.statusText}>{statusText}</Text>
+            </View>
+
+            <View style={styles.offlineBadge}>
+              <Ionicons name="cloud-done" size={12} color={colors.textLight} />
+            </View>
+
+            <View style={styles.coverMeta}>
+              <View style={styles.coverMetaRow}>
+                <Ionicons name="time-outline" size={12} color={colors.textLight} />
+                <Text style={styles.coverMetaText} numberOfLines={1}>{item.readTime}</Text>
+              </View>
+              <View style={styles.coverMetaRow}>
+                <Ionicons name="book-outline" size={12} color={colors.textLight} />
+                <Text style={styles.coverMetaText} numberOfLines={1}>{item.pageCount} pages</Text>
+              </View>
+            </View>
+
+            <View style={styles.playButton}>
+              <Ionicons name={actionIcon} size={17} color={colors.primaryDark} />
+            </View>
           </View>
         </View>
 
         <View style={styles.storyInfo}>
-          <View style={styles.storyTopRow}>
-            <View style={[styles.categoryBadge, { backgroundColor: item.categoryColor + '20' }]}>
-              <Text style={[styles.categoryBadgeText, { color: item.categoryColor }]}>
+          <View>
+            <View style={[styles.categoryPill, { backgroundColor: item.categoryColor + '1A' }]}>
+              <View style={[styles.categoryDot, { backgroundColor: item.categoryColor }]} />
+              <Text style={styles.categoryPillText} numberOfLines={1}>
                 {item.categoryLabel}
               </Text>
             </View>
-            <View style={[styles.statusBadge, item.status === 'completed' && styles.statusCompleted]}>
-              <Text style={styles.statusText}>
-                {item.status === 'completed' ? 'Completed' : 'Not Started'}
-              </Text>
-            </View>
-          </View>
 
-          <Text style={styles.storyTitle} numberOfLines={1}>{item.title}</Text>
-          <Text style={styles.storyTitleBisaya} numberOfLines={1}>{item.titleBisaya}</Text>
-
-          <View style={styles.metaRow}>
-            <Ionicons name="time-outline" size={12} color={colors.textMuted} />
-            <Text style={styles.metaText}>{item.readTime}</Text>
-            <Text style={styles.metaDot}>•</Text>
-            <Ionicons name="book-outline" size={12} color={colors.textMuted} />
-            <Text style={styles.metaText}>{item.pageCount} pages</Text>
+            <Text style={styles.storyTitle} numberOfLines={2}>{item.title}</Text>
+            <Text style={styles.storyTitleBisaya} numberOfLines={1}>{item.titleBisaya}</Text>
           </View>
 
           <View style={styles.storyAction}>
-            <Ionicons name="book" size={14} color={colors.primary} />
-            <Text style={styles.storyActionText}>Read Story</Text>
+            <Text style={styles.storyActionText} numberOfLines={1}>{actionText}</Text>
+            <Ionicons name="chevron-forward" size={16} color={colors.primary} />
           </View>
         </View>
       </TouchableOpacity>
@@ -203,24 +269,100 @@ const styles = StyleSheet.create({
   filterPillText: { fontSize: typography.bodySmall, fontWeight: '600', color: colors.textSecondary },
   filterPillTextActive: { color: colors.textLight },
   listContainer: { paddingHorizontal: spacing.xl, paddingTop: spacing.md, paddingBottom: spacing.xxl },
-  storyCard: { flexDirection: 'row', backgroundColor: colors.surface, borderRadius: radius.xl, marginBottom: spacing.lg, overflow: 'hidden', height: 170, ...shadows.cardLarge },
-  coverWrapper: { width: 128, position: 'relative' },
+
+  // ---- Story card (redesigned) ----
+  // No overflow:hidden on the card itself, so its shadow isn't clipped on iOS.
+  storyCard: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderRadius: radius.xl,
+    padding: spacing.md,
+    marginBottom: spacing.xl,
+    ...floatingCard,
+  },
+  coverShadow: {
+    width: 132,
+    height: 180,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface, // needed for Android elevation
+    ...floatingCover,
+  },
+  coverClip: { flex: 1, borderRadius: radius.lg, overflow: 'hidden' },
   coverImage: { width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
-  offlineBadge: { position: 'absolute', top: spacing.sm, right: spacing.sm, width: 22, height: 22, borderRadius: radius.pill, backgroundColor: 'rgba(0, 0, 0, 0.4)', justifyContent: 'center', alignItems: 'center' },
-  storyInfo: { flex: 1, padding: spacing.lg, justifyContent: 'space-between' },
-  storyTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.xs },
-  categoryBadge: { paddingHorizontal: spacing.sm, paddingVertical: 3, borderRadius: radius.sm },
-  categoryBadgeText: { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
-  statusBadge: { paddingHorizontal: spacing.sm, paddingVertical: 3, borderRadius: radius.pill, backgroundColor: colors.surfaceMuted },
-  statusCompleted: { backgroundColor: '#D1FAE5' },
-  statusText: { fontSize: 10, fontWeight: '700', color: colors.textPrimary },
-  storyTitle: { fontSize: typography.heading3, fontWeight: '700', color: colors.textPrimary },
-  storyTitleBisaya: { fontSize: typography.bodySmall, fontStyle: 'italic', color: colors.textSecondary, marginTop: 2 },
-  metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.xs, gap: 4 },
-  metaText: { fontSize: typography.tiny, color: colors.textMuted, fontWeight: '500' },
-  metaDot: { fontSize: typography.tiny, color: colors.textMuted, marginHorizontal: 2 },
-  storyAction: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.xs, gap: 4 },
-  storyActionText: { fontSize: typography.bodySmall, fontWeight: '700', color: colors.primary },
+  coverScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 92 },
+
+  statusPill: {
+    position: 'absolute',
+    top: spacing.sm,
+    left: spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(15, 23, 42, 0.62)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+  },
+  statusText: { fontSize: 10, fontFamily: typography.fontBold, color: colors.textLight },
+  offlineBadge: {
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.sm,
+    width: 22,
+    height: 22,
+    borderRadius: radius.pill,
+    backgroundColor: 'rgba(15, 23, 42, 0.62)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  coverMeta: { position: 'absolute', left: spacing.sm, bottom: spacing.sm, right: 52, gap: 2 },
+  coverMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  coverMetaText: {
+    flexShrink: 1,
+    fontSize: typography.tiny,
+    fontFamily: typography.fontSemiBold,
+    color: colors.textLight,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  playButton: {
+    position: 'absolute',
+    right: spacing.sm,
+    bottom: spacing.sm,
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  storyInfo: { flex: 1, marginLeft: spacing.md, paddingVertical: 2, justifyContent: 'space-between' },
+  categoryPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    maxWidth: '100%',
+    gap: 6,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+    marginBottom: spacing.sm,
+  },
+  categoryDot: { width: 6, height: 6, borderRadius: 3 },
+  categoryPillText: { flexShrink: 1, fontSize: 11, fontFamily: typography.fontSemiBold, color: colors.textPrimary },
+  storyTitle: { fontSize: typography.heading3, lineHeight: 24, fontFamily: typography.fontBold, color: colors.textPrimary },
+  storyTitleBisaya: { fontSize: typography.bodySmall, fontStyle: 'italic', fontFamily: typography.fontRegular, color: colors.textSecondary, marginTop: 2 },
+  storyAction: { flexDirection: 'row', alignItems: 'center', gap: 2, marginTop: spacing.sm },
+  storyActionText: { flexShrink: 1, fontSize: typography.bodySmall, fontFamily: typography.fontBold, color: colors.primary },
+
   emptyState: { paddingVertical: spacing.xxl, alignItems: 'center' },
   emptyStateText: { fontSize: typography.bodyLarge, fontWeight: '600', color: colors.textPrimary, marginTop: spacing.md },
 });

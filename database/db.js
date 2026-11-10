@@ -1,6 +1,4 @@
 // database/db.js
-// SQLite database initialization for KB Buddy
-
 import * as SQLite from 'expo-sqlite';
 
 let dbInstance = null;
@@ -11,12 +9,11 @@ export async function getDatabase() {
   console.log('🔧 Initializing database...');
 
   if (typeof SQLite.openDatabaseAsync !== 'function') {
-    throw new Error(
-      'expo-sqlite is not properly installed. Run: npx expo install expo-sqlite'
-    );
+    throw new Error('expo-sqlite is not properly installed.');
   }
 
-  dbInstance = await SQLite.openDatabaseAsync('kbbuddy.db');
+  // UPGRADED TO V4
+  dbInstance = await SQLite.openDatabaseAsync('kbbuddy_v4.db');
   console.log('🔧 Database opened');
 
   await dbInstance.execAsync(`
@@ -40,6 +37,10 @@ export async function getDatabase() {
       description TEXT,
       englishText TEXT,
       bisayaText TEXT,
+      vocab_word TEXT,
+      vocab_en_def TEXT,
+      vocab_bis_def TEXT,
+      quiz_data TEXT,
       createdAt TEXT
     );
 

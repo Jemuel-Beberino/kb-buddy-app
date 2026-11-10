@@ -1,5 +1,4 @@
 // screens/TeacherDashboardScreen.js
-
 import React, { useState, useCallback } from 'react';
 import {
   StyleSheet, Text, View, FlatList,
@@ -34,21 +33,26 @@ export default function TeacherDashboardScreen({ navigation }) {
   );
 
   const renderLearner = ({ item }) => (
-    <View style={styles.learnerCard}>
+    <TouchableOpacity 
+      style={styles.learnerCard} 
+      activeOpacity={0.7}
+      onPress={() => navigation.navigate('TeacherViewLearner', { learnerId: item.learnerId })}
+    >
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>{item.learnerId.substring(0, 2).toUpperCase()}</Text>
       </View>
       <View style={styles.info}>
         <Text style={styles.learnerId}>{item.learnerId}</Text>
         <Text style={styles.learnerMeta}>
-          {item.storiesCompleted} {item.storiesCompleted === 1 ? 'story' : 'stories'} • Last active: {new Date(item.lastActive).toLocaleDateString()}
+          {item.storiesCompleted} {item.storiesCompleted === 1 ? 'story' : 'stories'}
         </Text>
       </View>
       <View style={styles.scoreBadge}>
         <Text style={styles.scoreLabel}>Avg</Text>
         <Text style={styles.scoreValue}>{item.averageScore}%</Text>
       </View>
-    </View>
+      <Ionicons name="chevron-forward" size={20} color={colors.textMuted} style={{ marginLeft: spacing.sm }} />
+    </TouchableOpacity>
   );
 
   return (
@@ -56,18 +60,19 @@ export default function TeacherDashboardScreen({ navigation }) {
       <SafeAreaView style={styles.container} edges={['top']}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
         
-        {/* Header */}
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>Teacher Dashboard</Text>
             <Text style={styles.subtitle}>Monitor your learners' progress</Text>
           </View>
-          <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('Welcome')}>
+          <TouchableOpacity 
+            style={styles.profileBtn} 
+            onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] })}
+          >
             <Ionicons name="log-out-outline" size={24} color={colors.error} />
           </TouchableOpacity>
         </View>
 
-        {/* Summary Cards */}
         <View style={styles.summaryRow}>
           <View style={styles.summaryCard}>
             <Text style={styles.summaryValue}>{learners.length}</Text>
@@ -107,41 +112,23 @@ export default function TeacherDashboardScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    padding: spacing.xl, paddingBottom: spacing.md,
-  },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.xl, paddingBottom: spacing.md },
   title: { fontSize: typography.displayMedium, fontWeight: '700', color: colors.textPrimary },
   subtitle: { fontSize: typography.body, color: colors.textSecondary, marginTop: 4 },
   profileBtn: { padding: spacing.sm },
   summaryRow: { flexDirection: 'row', gap: spacing.md, paddingHorizontal: spacing.xl, marginVertical: spacing.md },
-  summaryCard: {
-    flex: 1, backgroundColor: colors.primary, borderRadius: radius.lg,
-    padding: spacing.lg, ...shadows.cardLarge,
-  },
+  summaryCard: { flex: 1, backgroundColor: colors.primary, borderRadius: radius.lg, padding: spacing.lg, ...shadows.cardLarge },
   summaryValue: { fontSize: 32, fontWeight: '700', color: colors.textLight },
   summaryLabel: { fontSize: typography.bodySmall, color: 'rgba(255,255,255,0.8)', marginTop: 4 },
-  sectionTitle: {
-    fontSize: typography.heading3, fontWeight: '700', color: colors.textPrimary,
-    paddingHorizontal: spacing.xl, marginTop: spacing.md, marginBottom: spacing.sm,
-  },
+  sectionTitle: { fontSize: typography.heading3, fontWeight: '700', color: colors.textPrimary, paddingHorizontal: spacing.xl, marginTop: spacing.md, marginBottom: spacing.sm },
   listContainer: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xxl },
-  learnerCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface,
-    borderRadius: radius.lg, padding: spacing.md, marginBottom: spacing.md, ...shadows.card,
-  },
-  avatar: {
-    width: 44, height: 44, borderRadius: radius.pill, backgroundColor: colors.primarySoft,
-    justifyContent: 'center', alignItems: 'center', marginRight: spacing.md,
-  },
+  learnerCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: radius.lg, padding: spacing.md, marginBottom: spacing.md, ...shadows.card },
+  avatar: { width: 44, height: 44, borderRadius: radius.pill, backgroundColor: colors.primarySoft, justifyContent: 'center', alignItems: 'center', marginRight: spacing.md },
   avatarText: { fontSize: typography.bodyLarge, fontWeight: '700', color: colors.primary },
   info: { flex: 1 },
   learnerId: { fontSize: typography.bodyLarge, fontWeight: '700', color: colors.textPrimary },
   learnerMeta: { fontSize: typography.tiny, color: colors.textSecondary, marginTop: 2 },
-  scoreBadge: {
-    alignItems: 'center', backgroundColor: colors.surfaceMuted,
-    paddingHorizontal: spacing.sm, paddingVertical: 6, borderRadius: radius.md,
-  },
+  scoreBadge: { alignItems: 'center', backgroundColor: colors.surfaceMuted, paddingHorizontal: spacing.sm, paddingVertical: 6, borderRadius: radius.md },
   scoreLabel: { fontSize: 10, color: colors.textMuted, fontWeight: '600', textTransform: 'uppercase' },
   scoreValue: { fontSize: typography.bodyLarge, fontWeight: '700', color: colors.primary },
   loadingText: { textAlign: 'center', marginTop: spacing.xl, color: colors.textSecondary },

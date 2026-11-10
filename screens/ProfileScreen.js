@@ -1,17 +1,17 @@
 // screens/ProfileScreen.js
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Switch, StatusBar } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing, radius, shadows } from '../styles/theme';
+import { useSettings } from '../context/SettingsContext'; // <-- Import
 
 export default function ProfileScreen({ route, navigation }) {
   const learnerName = route?.params?.learnerName || 'Learner';
   const learnerId = route?.params?.learnerId || 'KS-12345';
 
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [language, setLanguage] = useState('both');
-  const [textSize, setTextSize] = useState('medium');
+  // Use global settings instead of local state
+  const { textSize, updateTextSize, soundEnabled, updateSoundEnabled } = useSettings();
 
   return (
     <SafeAreaProvider>
@@ -34,14 +34,8 @@ export default function ProfileScreen({ route, navigation }) {
             <Text style={styles.subLabel}>Preferred Display Language</Text>
             <View style={styles.pillRow}>
               {['English', 'Bisaya', 'Both'].map((l) => (
-                <TouchableOpacity
-                  key={l}
-                  style={[styles.pill, language === l.toLowerCase() && styles.pillActive]}
-                  onPress={() => setLanguage(l.toLowerCase())}
-                >
-                  <Text style={[styles.pillText, language === l.toLowerCase() && styles.pillTextActive]}>
-                    {l}
-                  </Text>
+                <TouchableOpacity key={l} style={[styles.pill, l === 'Both' && styles.pillActive]}>
+                  <Text style={[styles.pillText, l === 'Both' && styles.pillTextActive]}>{l}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -51,7 +45,11 @@ export default function ProfileScreen({ route, navigation }) {
                 <Ionicons name="volume-medium-outline" size={20} color={colors.textPrimary} />
                 <Text style={styles.rowLabel}>Sound Effects</Text>
               </View>
-              <Switch value={soundEnabled} onValueChange={setSoundEnabled} trackColor={{ true: colors.primary }} />
+              <Switch 
+                value={soundEnabled} 
+                onValueChange={updateSoundEnabled} 
+                trackColor={{ true: colors.primary }} 
+              />
             </View>
 
             <Text style={styles.subLabel}>Reading Text Size</Text>
@@ -60,7 +58,7 @@ export default function ProfileScreen({ route, navigation }) {
                 <TouchableOpacity
                   key={s}
                   style={[styles.pill, textSize === s.toLowerCase() && styles.pillActive]}
-                  onPress={() => setTextSize(s.toLowerCase())}
+                  onPress={() => updateTextSize(s.toLowerCase())}
                 >
                   <Text style={[styles.pillText, textSize === s.toLowerCase() && styles.pillTextActive]}>
                     {s}
@@ -80,7 +78,10 @@ export default function ProfileScreen({ route, navigation }) {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('Welcome')}>
+          <TouchableOpacity 
+            style={styles.logoutButton} 
+            onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] })}
+          >
             <Ionicons name="log-out-outline" size={20} color={colors.error} />
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>

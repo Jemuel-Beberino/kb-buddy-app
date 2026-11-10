@@ -14,14 +14,12 @@ export async function saveQuizResult({
   const db = await getDatabase();
   const now = new Date().toISOString();
 
-  // Check if a record already exists
   const existing = await db.getFirstAsync(
     'SELECT * FROM progress WHERE learner_id = ? AND story_id = ?',
     [learnerId, storyId]
   );
 
   if (existing) {
-    // Update: keep the highest score, increment attempt count
     const newBestScore = Math.max(existing.quiz_score, quizScore);
     await db.runAsync(
       `UPDATE progress
@@ -34,7 +32,6 @@ export async function saveQuizResult({
       [newBestScore, totalQuestions, now, learnerId, storyId]
     );
   } else {
-    // Insert new
     await db.runAsync(
       `INSERT INTO progress
        (learner_id, story_id, story_title, quiz_score, total_questions, completed, attempt_count, last_attempt_at)
@@ -60,21 +57,18 @@ export async function getProgressForLearner(learnerId) {
 export async function getLearnerStats(learnerId) {
   const db = await getDatabase();
 
-  // Total completed stories
   const completedRow = await db.getFirstAsync(
     `SELECT COUNT(*) as count FROM progress
      WHERE learner_id = ? AND completed = 1`,
     [learnerId]
   );
 
-  // Total quiz attempts (sum of all quizzes answered)
   const questionsRow = await db.getFirstAsync(
     `SELECT SUM(total_questions) as total, SUM(quiz_score) as correct
      FROM progress WHERE learner_id = ?`,
     [learnerId]
   );
 
-  // Recent activity (last 3)
   const recent = await db.getAllAsync(
     `SELECT story_title, quiz_score, total_questions, last_attempt_at
      FROM progress WHERE learner_id = ?
@@ -82,7 +76,6 @@ export async function getLearnerStats(learnerId) {
     [learnerId]
   );
 
-  // Compute streak
   const allRecords = await db.getAllAsync(
     `SELECT DISTINCT date(last_attempt_at) as day
      FROM progress WHERE learner_id = ?
@@ -104,7 +97,6 @@ export async function getLearnerStats(learnerId) {
 export async function getAllLearnersStats() {
   const db = await getDatabase();
 
-  // Get distinct learners and their aggregated stats
   const learners = await db.getAllAsync(`
     SELECT 
       learner_id,
@@ -131,6 +123,23 @@ export async function getAllLearnersStats() {
   });
 }
 
+// --- NEW FUNCTION FOR DYNAMIC STATUS ON HOME SCREEN ---
+export async function getLearnerStoryStatuses(learnerId) {
+  const db = await getDatabase();
+  const records = await db.getAllAsync(
+    'SELECT story_id, quiz_score, total_questions FROM progress WHERE learner_id = ?',
+    [learnerId]
+  );
+
+  const statuses = {};
+  records.forEach((rec) => {
+    const isPerfect = rec.quiz_score === rec.total_questions && rec.total_questions > 0;
+    statuses[rec.story_id] = isPerfect ? 'completed' : 'in-progress';
+  });
+
+  return statuses;
+}
+
 // Compute consecutive days streak
 function computeStreak(days) {
   if (!days || days.length === 0) return 0;
@@ -143,7 +152,6 @@ function computeStreak(days) {
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-  // If last activity is neither today nor yesterday, streak is broken
   if (days[0] !== todayStr && days[0] !== yesterdayStr) return 0;
 
   let streak = 1;
@@ -154,9 +162,7 @@ function computeStreak(days) {
     const prevDate = new Date(days[i]);
     prevDate.setHours(0, 0, 0, 0);
 
-    const diff = Math.round(
-      (currentDate - prevDate) / (1000 * 60 * 60 * 24)
-    );
+    const diff = Math.round((currentDate - prevDate) / (1000 * 60 * 60 * 24));
     if (diff === 1) {
       streak++;
       currentDate = prevDate;
