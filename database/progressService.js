@@ -173,3 +173,38 @@ function computeStreak(days) {
 
   return streak;
 }
+
+export async function getAllLearnersStats() {
+  const db = await getDatabase();
+
+  // USING LEFT JOIN to get the actual NAME from the learners table
+  const learners = await db.getAllAsync(`
+    SELECT 
+      l.id as learner_id,
+      l.name as learner_name,
+      l.avatar_uri,
+      COUNT(DISTINCT p.story_id) as stories_completed,
+      SUM(p.quiz_score) as total_correct,
+      SUM(p.total_questions) as total_questions,
+      MAX(p.last_attempt_at) as last_active
+    FROM learners l
+    LEFT JOIN progress p ON l.id = p.learner_id
+    GROUP BY l.id
+    ORDER BY last_active DESC
+  `);
+
+  return learners.map((l) => {
+    const avgScore = l.total_questions > 0 
+      ? Math.round((l.total_correct / l.total_questions) * 100) 
+      : 0;
+      
+    return {
+      learnerId: l.learner_id,
+      learnerName: l.learner_name || l.learner_id, // Fallback to ID if name is missing
+      avatarUri: l.avatar_uri,
+      storiesCompleted: l.stories_completed || 0,
+      averageScore: avgScore,
+      lastActive: l.last_active || null,
+    };
+  });
+}

@@ -6,15 +6,8 @@ let dbInstance = null;
 export async function getDatabase() {
   if (dbInstance) return dbInstance;
 
-  console.log('🔧 Initializing database...');
-
-  if (typeof SQLite.openDatabaseAsync !== 'function') {
-    throw new Error('expo-sqlite is not properly installed.');
-  }
-
-  // UPGRADED TO V4
-  dbInstance = await SQLite.openDatabaseAsync('kbbuddy_v4.db');
-  console.log('🔧 Database opened');
+  // UPGRADED TO V5 for avatar_uri
+  dbInstance = await SQLite.openDatabaseAsync('kbbuddy_v5.db');
 
   await dbInstance.execAsync(`
     CREATE TABLE IF NOT EXISTS progress (
@@ -47,10 +40,10 @@ export async function getDatabase() {
     CREATE TABLE IF NOT EXISTS learners (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      pin TEXT NOT NULL
+      pin TEXT NOT NULL,
+      avatar_uri TEXT
     );
   `);
 
-  console.log('🔧 Tables ready');
   return dbInstance;
 }

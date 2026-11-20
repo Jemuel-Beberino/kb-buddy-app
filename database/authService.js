@@ -44,3 +44,9 @@ export async function loginLearner(id, pin) {
   }
   return user;
 }
+
+// NEW FUNCTION
+export async function updateLearnerAvatar(id, uri) {
+  const db = await getDatabase();
+  await db.runAsync('UPDATE learners SET avatar_uri = ? WHERE id = ?', [uri, id]);
+}

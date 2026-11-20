@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet, Text, View, TextInput, TouchableOpacity,
   Alert, StatusBar, KeyboardAvoidingView, Platform, ScrollView,
-  Animated, Pressable,
+  Animated, Pressable, Image,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -24,26 +24,31 @@ function Mascot() {
   const pulse = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const loop = Animated.loop(
+    Animated.loop(
       Animated.sequence([
-        Animated.timing(pulse, { toValue: 1, duration: 1800, useNativeDriver: true }),
-        Animated.timing(pulse, { toValue: 0, duration: 1800, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 1, duration: 1500, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 0, duration: 1500, useNativeDriver: true }),
       ])
-    );
-    loop.start();
-    return () => loop.stop();
+    ).start();
   }, [pulse]);
 
-  const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.07] });
-  const opacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.7, 1] });
+  const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
+  const opacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.5, 0.8] });
 
   return (
     <View style={styles.mascotArea}>
-      <Animated.View style={[styles.glowOuter, { opacity, transform: [{ scale }] }]} />
-      <View style={styles.glowInner} />
-      <View style={styles.mascotCircle}>
-        <Text style={styles.mascot}>🦉</Text>
-      </View>
+      <Animated.View style={[styles.glowOuter, { opacity }]}>
+        <View style={styles.glowInner} />
+      </Animated.View>
+      
+      {/* Animated scale on the circle holding the image */}
+      <Animated.View style={[styles.mascotCircle, { transform: [{ scale }] }]}>
+        <Image 
+          source={require('../assets/images/owl.png')} 
+          style={{ width: 80, height: 80 }} 
+          resizeMode="contain"
+        />
+      </Animated.View>
     </View>
   );
 }

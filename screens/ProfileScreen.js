@@ -1,6 +1,6 @@
 // screens/ProfileScreen.js
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Switch, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Switch, StatusBar, Image, } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -69,7 +69,7 @@ export default function ProfileScreen({ route, navigation }) {
                 style={StyleSheet.absoluteFill}
               />
               <View style={styles.owlCircle}>
-                <Text style={styles.profileEmoji}>🦉</Text>
+                <Image source={require('../assets/images/owl.png')} style={{ width: 80, height: 80 }} resizeMode="contain" />
               </View>
               <Text style={styles.profileName}>{learnerName}</Text>
               <Text style={styles.profileId}>Learner ID: {learnerId}</Text>

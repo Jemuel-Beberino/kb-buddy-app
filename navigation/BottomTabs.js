@@ -3,6 +3,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography } from '../styles/theme';
+import { Image } from 'react-native';
 
 import HomeDashboardScreen from '../screens/HomeDashboardScreen'; // <-- New Import
 import HomeScreen from '../screens/HomeScreen'; // This is now the Library
@@ -23,13 +24,15 @@ export default function BottomTabs({ route }) {
         tabBarStyle: { backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.border, height: 64, paddingBottom: 8, paddingTop: 8 },
         tabBarLabelStyle: { fontSize: typography.tiny, fontWeight: '600' },
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
-          else if (route.name === 'Library') iconName = focused ? 'book' : 'book-outline'; // Changed to Library
-          else if (route.name === 'Progress') iconName = focused ? 'trending-up' : 'trending-up-outline';
-          else if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
-          return <Ionicons name={iconName} size={22} color={color} />;
-        },
+          if (route.name === 'Library' || route.name === 'Stories') {
+            return (
+              <Image 
+                source={require('../assets/images/owl.png')} 
+                style={{ width: 24, height: 24, opacity: focused ? 1 : 0.5 }} 
+                resizeMode="contain" 
+              />
+            );
+          }
       })}
     >
       <Tab.Screen name="Home" component={HomeDashboardScreen} initialParams={{ learnerId, learnerName }} />

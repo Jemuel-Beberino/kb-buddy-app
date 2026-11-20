@@ -200,8 +200,8 @@ export default function HomeScreen({ route, navigation }) {
         </View>
 
         <View style={styles.pageHeader}>
-          <Text style={styles.pageTitle}>Mga Istorya</Text>
-          <Text style={styles.pageSubtitle}>Hi, {learnerName}! Choose a story.</Text>
+          <Text style={[styles.pageTitle, { fontWeight: '900' }]}>Mga Istorya</Text>
+          <Text style={styles.pageSubtitle}>Choose a story. Discover new words.</Text>
         </View>
 
         <View style={styles.searchContainer}>

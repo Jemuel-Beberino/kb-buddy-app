@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   StyleSheet, Text, View, TouchableOpacity, ScrollView,
   StatusBar, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator,
-  Animated, Pressable,
+  Animated, Pressable, Image,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -368,7 +368,7 @@ export default function QuizScreen({ route, navigation }) {
               <PopIn from={0.3} style={styles.mascotWrap}>
                 <View style={[styles.mascotGlow, passed ? styles.mascotGlowPass : styles.mascotGlowTry]}>
                   <View style={[styles.mascotCircle, passed ? styles.mascotCirclePass : styles.mascotCircleTry]}>
-                    <Text style={styles.resultsMascot}>🦉</Text>
+                    <Image source={require('../assets/images/owl.png')} style={{ width: 120, height: 120 }} resizeMode="contain" />
                   </View>
                 </View>
               </PopIn>

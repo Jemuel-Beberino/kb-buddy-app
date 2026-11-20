@@ -8,6 +8,7 @@ import {
   Animated,
   ScrollView,
   StatusBar,
+  Image,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -74,10 +75,13 @@ export default function WelcomeScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.appHeader}>
-            <View style={styles.owlBadge}>
-              <Text style={styles.owlEmoji}>🦉</Text>
-            </View>
-            <Text style={styles.appName}>KB Buddy</Text>
+            <View style={styles.appHeader}>
+            <Image 
+              source={require('../assets/images/logo.png')} 
+              style={styles.brandLogo} 
+              resizeMode="contain" 
+            />
+          </View>
             <View style={styles.offlineBadge}>
               <Ionicons name="checkmark-circle" size={14} color={colors.success} />
               <Text style={styles.offlineText}>Offline Mode Ready</Text>
@@ -235,6 +239,13 @@ const styles = StyleSheet.create({
     marginRight: spacing.sm,
     ...shadows.card,
   },
+
+brandLogo: {
+  width: 320,  // Increased from 200
+  height: 120, // Increased from 60
+  alignSelf: 'center',
+  marginBottom: spacing.md,
+},
   owlEmoji: { fontSize: 24 },
   appName: { flex: 1, fontSize: typography.heading3, fontFamily: typography.fontBold, color: colors.primaryDark },
   offlineBadge: {

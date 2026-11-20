@@ -54,9 +54,12 @@ export default function TeacherLoginScreen({ navigation }) {
             </TouchableOpacity>
 
             <View style={styles.header}>
-              <View style={styles.iconBadge}>
-                <MaterialCommunityIcons name="school" size={32} color={colors.textLight} />
-              </View>
+              // Inside the header of TeacherLoginScreen.js:
+<Image 
+  source={require('../assets/images/logo.png')} 
+  style={{ width: 200, height: 80, marginBottom: 20 }} 
+  resizeMode="contain" 
+/>
               <Text style={styles.title}>Teacher Portal</Text>
               <Text style={styles.subtitle}>Sign in to manage your classroom</Text>
             </View>
