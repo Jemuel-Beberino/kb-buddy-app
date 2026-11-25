@@ -12,13 +12,25 @@ import { colors, typography, spacing, radius, shadows } from '../styles/theme';
 import { getAllLearnersStats } from '../database/progressService';
 
 /* ------------------------------------------------------------------ */
+/*  PRESENTATION MODE TOGGLE                                           */
+/* ------------------------------------------------------------------ */
+const USE_MOCK_DATA = true; // Set to false to load real data
+
+const MOCK_LEARNERS = [
+  { learnerId: 'KS-12345', learnerName: 'Maria Santos', storiesCompleted: 5, averageScore: 92 },
+  { learnerId: 'KS-12346', learnerName: 'Juan Dela Cruz', storiesCompleted: 3, averageScore: 78 },
+  { learnerId: 'KS-12347', learnerName: 'Jose Rizal', storiesCompleted: 2, averageScore: 55 },
+  { learnerId: 'KS-12348', learnerName: 'Andres Bonifacio', storiesCompleted: 4, averageScore: 88 },
+  { learnerId: 'KS-12349', learnerName: 'Gabriela Silang', storiesCompleted: 1, averageScore: 68 },
+  { learnerId: 'KS-12350', learnerName: 'Liza Soberano', storiesCompleted: 0, averageScore: NaN },
+];
+
+/* ------------------------------------------------------------------ */
 /*  UI-only helpers                                                    */
 /* ------------------------------------------------------------------ */
 
-// `displayMedium` isn't defined in theme.js; fall back to 28.
 const TITLE_SIZE = typography.displayMedium ?? 28;
 
-// Score tiers (same cut-offs as the quiz results: 80 / 60)
 const TIERS = {
   high: { label: 'High', bg: '#D1FAE5', fg: '#047857', bar: colors.success },
   medium: { label: 'Medium', bg: '#FEF3C7', fg: '#92400E', bar: colors.warning },
@@ -33,14 +45,10 @@ function getTier(score) {
   return TIERS.low;
 }
 
-// Distinct avatar colours, picked deterministically from the learner ID
 const AVATAR_PALETTE = [
-  { bg: '#CCFBF1', fg: '#0F766E' },
-  { bg: '#FEF3C7', fg: '#92400E' },
-  { bg: '#E0E7FF', fg: '#4338CA' },
-  { bg: '#FCE7F3', fg: '#BE185D' },
-  { bg: '#E0F2FE', fg: '#0369A1' },
-  { bg: '#DCFCE7', fg: '#15803D' },
+  { bg: '#CCFBF1', fg: '#0F766E' }, { bg: '#FEF3C7', fg: '#92400E' },
+  { bg: '#E0E7FF', fg: '#4338CA' }, { bg: '#FCE7F3', fg: '#BE185D' },
+  { bg: '#E0F2FE', fg: '#0369A1' }, { bg: '#DCFCE7', fg: '#15803D' },
 ];
 
 function getAvatarColors(id) {
@@ -62,8 +70,14 @@ export default function TeacherDashboardScreen({ navigation }) {
       let isActive = true;
       async function loadData() {
         try {
-          const data = await getAllLearnersStats();
-          if (isActive) setLearners(data);
+          if (USE_MOCK_DATA) {
+            // Simulate a tiny loading delay for realism
+            await new Promise((resolve) => setTimeout(resolve, 400));
+            if (isActive) setLearners(MOCK_LEARNERS);
+          } else {
+            const data = await getAllLearnersStats();
+            if (isActive) setLearners(data);
+          }
         } catch (error) {
           console.error('Failed to load learners:', error);
         } finally {
@@ -78,7 +92,10 @@ export default function TeacherDashboardScreen({ navigation }) {
   const query = searchQuery.trim().toLowerCase();
   const filteredLearners = query === ''
     ? learners
-    : learners.filter((l) => l.learnerId.toLowerCase().includes(query));
+    : learners.filter((l) => 
+        l.learnerId.toLowerCase().includes(query) || 
+        l.learnerName.toLowerCase().includes(query)
+      );
 
   const renderLearner = ({ item }) => {
     const score = Number(item.averageScore);
@@ -90,14 +107,16 @@ export default function TeacherDashboardScreen({ navigation }) {
       <TouchableOpacity 
         style={styles.learnerCard} 
         activeOpacity={0.7}
-        onPress={() => navigation.navigate('TeacherViewLearner', { learnerId: item.learnerId })}
+        onPress={() => navigation.navigate('TeacherViewLearner', { learnerId: item.learnerId, learnerName: item.learnerName })}
       >
         <View style={[styles.avatar, { backgroundColor: avatar.bg }]}>
-          <Text style={[styles.avatarText, { color: avatar.fg }]}>{item.learnerId.substring(0, 2).toUpperCase()}</Text>
+          <Text style={[styles.avatarText, { color: avatar.fg }]}>{item.learnerName.substring(0, 2).toUpperCase()}</Text>
         </View>
 
         <View style={styles.info}>
-          <Text style={styles.learnerId} numberOfLines={1}>{item.learnerId}</Text>
+          <Text style={styles.learnerId} numberOfLines={1}>{item.learnerName}</Text>
+          <Text style={{ fontSize: 10, color: colors.textMuted, marginTop: 2 }}>ID: {item.learnerId}</Text>
+
           <View style={styles.metaRow}>
             <MaterialCommunityIcons name="book-check-outline" size={14} color={colors.textSecondary} />
             <Text style={styles.learnerMeta}>
@@ -110,7 +129,9 @@ export default function TeacherDashboardScreen({ navigation }) {
         </View>
 
         <View style={[styles.scoreBadge, { backgroundColor: tier.bg }]}>
-          <Text style={[styles.scoreValue, { color: tier.fg }]}>{item.averageScore}%</Text>
+          <Text style={[styles.scoreValue, { color: tier.fg }]}>
+            {Number.isNaN(score) ? '—' : `${score}%`}
+          </Text>
           <View style={styles.scoreStatusRow}>
             <View style={[styles.scoreDot, { backgroundColor: tier.bar }]} />
             <Text style={[styles.scoreLabel, { color: tier.fg }]}>{tier.label}</Text>
@@ -122,7 +143,6 @@ export default function TeacherDashboardScreen({ navigation }) {
     );
   };
 
-  // Summary cards + list heading (no horizontal padding; callers add it)
   const listHeader = (
     <View>
       <View style={styles.summaryRow}>
@@ -213,7 +233,7 @@ export default function TeacherDashboardScreen({ navigation }) {
           <Ionicons name="search" size={18} color={searchFocused ? colors.primary : colors.textMuted} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search learner ID..."
+            placeholder="Search learner name or ID..."
             placeholderTextColor={colors.textMuted}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -262,7 +282,7 @@ export default function TeacherDashboardScreen({ navigation }) {
                   <Ionicons name="search" size={36} color={colors.primary} />
                 </View>
                 <Text style={styles.emptyText}>No learners found.</Text>
-                <Text style={styles.emptySubtext}>Try a different ID.</Text>
+                <Text style={styles.emptySubtext}>Try a different name or ID.</Text>
               </View>
             }
             contentContainerStyle={styles.listContainer}
@@ -280,14 +300,12 @@ const styles = StyleSheet.create({
   topGradient: { position: 'absolute', top: 0, left: 0, right: 0, height: 260 },
   padX: { paddingHorizontal: spacing.xl },
 
-  // Header
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: spacing.xl, paddingTop: spacing.lg, paddingBottom: spacing.md },
   headerText: { flex: 1, marginRight: spacing.md },
   title: { fontSize: TITLE_SIZE, lineHeight: TITLE_SIZE + 8, fontFamily: typography.fontBold, color: colors.textPrimary },
   subtitle: { fontSize: typography.body, fontFamily: typography.fontRegular, color: colors.textSecondary, marginTop: 2 },
   profileBtn: { width: 46, height: 46, borderRadius: radius.pill, backgroundColor: 'rgba(239, 68, 68, 0.12)', justifyContent: 'center', alignItems: 'center' },
 
-  // Search
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -305,7 +323,6 @@ const styles = StyleSheet.create({
   searchContainerFocused: { borderColor: colors.primary },
   searchInput: { flex: 1, fontSize: typography.body, fontFamily: typography.fontRegular, color: colors.textPrimary, paddingVertical: 0 },
 
-  // Summary cards
   summaryRow: { flexDirection: 'row', gap: spacing.md, marginTop: spacing.md, marginBottom: spacing.sm },
   summaryCard: {
     flex: 1,
@@ -323,7 +340,6 @@ const styles = StyleSheet.create({
   summaryValue: { fontSize: 36, lineHeight: 42, fontFamily: typography.fontBold },
   summaryLabel: { fontSize: typography.bodySmall, fontFamily: typography.fontSemiBold, marginTop: 2 },
 
-  // Section heading + legend
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: spacing.lg, marginBottom: spacing.xs },
   sectionTitle: { fontSize: typography.heading3, fontFamily: typography.fontBold, color: colors.textPrimary },
   countChip: { backgroundColor: colors.primarySoft, paddingHorizontal: spacing.md, paddingVertical: 4, borderRadius: radius.pill },
@@ -333,7 +349,6 @@ const styles = StyleSheet.create({
   legendDot: { width: 8, height: 8, borderRadius: 4 },
   legendText: { fontSize: typography.tiny, fontFamily: typography.fontSemiBold, color: colors.textSecondary },
 
-  // Learner list
   listContainer: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xxl },
   learnerCard: {
     flexDirection: 'row',
@@ -360,7 +375,6 @@ const styles = StyleSheet.create({
   scoreDot: { width: 6, height: 6, borderRadius: 3 },
   scoreLabel: { fontSize: 10, fontFamily: typography.fontBold },
 
-  // States
   loadingText: { textAlign: 'center', marginTop: spacing.xl, fontFamily: typography.fontRegular, color: colors.textSecondary },
   emptyState: { alignItems: 'center', marginTop: spacing.xl, paddingHorizontal: spacing.xl },
   emptyIconWrap: { width: 84, height: 84, borderRadius: 42, backgroundColor: colors.primarySoft, justifyContent: 'center', alignItems: 'center' },

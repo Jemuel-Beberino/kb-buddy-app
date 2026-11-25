@@ -19,7 +19,7 @@ import { loginLearner, registerLearner } from '../database/authService';
 const FIELD_H = 58;
 const LIP = 6;
 
-// Owl inside a soft, gently pulsing glow
+// Just the owl logo, bigger and without the circle background
 function Mascot() {
   const pulse = useRef(new Animated.Value(0)).current;
 
@@ -33,22 +33,14 @@ function Mascot() {
   }, [pulse]);
 
   const scale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
-  const opacity = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.5, 0.8] });
 
   return (
     <View style={styles.mascotArea}>
-      <Animated.View style={[styles.glowOuter, { opacity }]}>
-        <View style={styles.glowInner} />
-      </Animated.View>
-      
-      {/* Animated scale on the circle holding the image */}
-      <Animated.View style={[styles.mascotCircle, { transform: [{ scale }] }]}>
-        <Image 
-          source={require('../assets/images/owl.png')} 
-          style={{ width: 80, height: 80 }} 
-          resizeMode="contain"
-        />
-      </Animated.View>
+      <Animated.Image 
+        source={require('../assets/images/owl1.png')} 
+        style={[styles.mascotImage, { transform: [{ scale }] }]} 
+        resizeMode="contain"
+      />
     </View>
   );
 }
@@ -180,7 +172,7 @@ export default function LearnerLoginScreen() {
           <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             
             <Mascot />
-            <Text style={styles.title}>{isRegistering ? 'Create Account' : 'Hi Learner! 👋'}</Text>
+            <Text style={styles.title}>{isRegistering ? 'Create Account' : 'Hi Learner!'}</Text>
             <Text style={styles.subtitle}>
               {isRegistering ? 'Sign up to start learning' : 'Login with your Learner ID & PIN'}
             </Text>
@@ -263,22 +255,9 @@ const styles = StyleSheet.create({
   keyboardView: { flex: 1 },
   scrollContent: { flexGrow: 1, justifyContent: 'center', padding: spacing.xl, alignItems: 'center' },
 
-  // Mascot
-  mascotArea: { width: 200, height: 200, justifyContent: 'center', alignItems: 'center', marginBottom: spacing.md },
-  glowOuter: { position: 'absolute', width: 200, height: 200, borderRadius: 100, backgroundColor: 'rgba(94, 234, 212, 0.28)' },
-  glowInner: { position: 'absolute', width: 166, height: 166, borderRadius: 83, backgroundColor: 'rgba(94, 234, 212, 0.45)' },
-  mascotCircle: {
-    width: 136,
-    height: 136,
-    borderRadius: 68,
-    backgroundColor: colors.surface,
-    borderWidth: 5,
-    borderColor: colors.primaryLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...shadows.cardLarge,
-  },
-  mascot: { fontSize: 76 },
+  // Simplified Mascot (No circle backgrounds)
+  mascotArea: { width: 200, height: 180, justifyContent: 'center', alignItems: 'center', marginBottom: spacing.sm },
+  mascotImage: { width: 170, height: 170 },
 
   title: { fontSize: 30, lineHeight: 38, fontFamily: typography.fontBold, color: colors.textPrimary, textAlign: 'center', marginBottom: spacing.xs },
   subtitle: { fontSize: typography.body, fontFamily: typography.fontRegular, color: colors.textSecondary, marginBottom: spacing.xl, textAlign: 'center' },

@@ -15,9 +15,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, typography, spacing, radius, shadows } from '../styles/theme';
 
-// `displayLarge` isn't defined in theme.js, so the old hero title had no font size.
-// Add `displayLarge: 32` to typography if you want to control it from the theme.
-const HERO_SIZE = typography.displayLarge ?? 32;
 const LIP = 5; // depth of the "3D" bottom edge on tactile buttons
 
 /**
@@ -74,23 +71,23 @@ export default function WelcomeScreen({ navigation }) {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.appHeader}>
-            <View style={styles.appHeader}>
-            <Image 
-              source={require('../assets/images/logo.png')} 
-              style={styles.brandLogo} 
-              resizeMode="contain" 
-            />
-          </View>
+          {/* Top Bar (Offline Badge) */}
+          <View style={styles.topBar}>
             <View style={styles.offlineBadge}>
               <Ionicons name="checkmark-circle" size={14} color={colors.success} />
               <Text style={styles.offlineText}>Offline Mode Ready</Text>
             </View>
           </View>
 
-          <Text style={styles.heroTitle}>
-            KB Buddy: <Text style={styles.heroTitleAccent}>Klaro Basa</Text>
-          </Text>
+          {/* Larger Logo Container */}
+          <View style={styles.logoContainer}>
+            <Image 
+              source={require('../assets/images/logo.png')} 
+              style={styles.brandLogo} 
+              resizeMode="contain" 
+            />
+          </View>
+
           <Text style={styles.heroSubtitle}>
             Read. Understand. Learn in Bisaya.
           </Text>
@@ -113,7 +110,6 @@ export default function WelcomeScreen({ navigation }) {
                 end={{ x: 1, y: 1 }}
                 style={styles.learnerFace}
               >
-                {/* decorative bubbles (pure Views, no images) */}
                 <View style={styles.bubbleLarge} />
                 <View style={styles.bubbleSmall} />
 
@@ -227,27 +223,12 @@ const styles = StyleSheet.create({
   topGradient: { position: 'absolute', top: 0, left: 0, right: 0, height: 380 },
   scrollContent: { padding: spacing.xl, paddingBottom: spacing.xxl },
 
-  // Header
-  appHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xl },
-  owlBadge: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.pill,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.sm,
-    ...shadows.card,
+  // Top Bar / Offline Badge
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: spacing.sm,
   },
-
-brandLogo: {
-  width: 320,  // Increased from 200
-  height: 120, // Increased from 60
-  alignSelf: 'center',
-  marginBottom: spacing.md,
-},
-  owlEmoji: { fontSize: 24 },
-  appName: { flex: 1, fontSize: typography.heading3, fontFamily: typography.fontBold, color: colors.primaryDark },
   offlineBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -258,16 +239,17 @@ brandLogo: {
   },
   offlineText: { fontSize: typography.tiny, fontFamily: typography.fontSemiBold, color: '#047857', marginLeft: 4 },
 
-  // Hero
-  heroTitle: {
-    fontSize: HERO_SIZE,
-    lineHeight: HERO_SIZE + 8,
-    fontFamily: typography.fontBold,
-    color: colors.textPrimary,
-    textAlign: 'center',
-    marginBottom: spacing.sm,
+  // Logo
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: spacing.lg,
   },
-  heroTitleAccent: { color: colors.primary },
+  brandLogo: {
+    width: 240, // Increased significantly to fit the square image format
+    height: 240, 
+  },
+
+  // Hero Text
   heroSubtitle: {
     fontSize: typography.heading3,
     fontFamily: typography.fontSemiBold,

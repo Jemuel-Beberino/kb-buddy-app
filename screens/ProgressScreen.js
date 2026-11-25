@@ -4,15 +4,13 @@ import { StyleSheet, Text, View, ScrollView, StatusBar } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Circle } from 'react-native-svg'; // <-- This is the import that needs the package
+import Svg, { Circle } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing, radius, shadows } from '../styles/theme';
 import { getLearnerStats } from '../database/progressService';
 import { allStories } from '../data/stories';
+import { getCustomStories } from '../database/storyService'; // Added this
 
-const TOTAL_STORIES = allStories.length;
-
-// Helper component to draw the circular ring
 const CircularProgress = ({ size, strokeWidth, percentage, color }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -21,24 +19,10 @@ const CircularProgress = ({ size, strokeWidth, percentage, color }) => {
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
       <Svg width={size} height={size} style={{ transform: [{ rotate: '-90deg' }] }}>
+        <Circle stroke={colors.borderLight} fill="none" cx={size / 2} cy={size / 2} r={radius} strokeWidth={strokeWidth} />
         <Circle
-          stroke={colors.borderLight}
-          fill="none"
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          strokeWidth={strokeWidth}
-        />
-        <Circle
-          stroke={color}
-          fill="none"
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
+          stroke={color} fill="none" cx={size / 2} cy={size / 2} r={radius} strokeWidth={strokeWidth}
+          strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round"
         />
       </Svg>
       <Text style={styles.circleText}>{Math.round(percentage)}%</Text>
@@ -50,12 +34,9 @@ export default function ProgressScreen({ route }) {
   const learnerId = route?.params?.learnerId || 'KS-12345';
 
   const [stats, setStats] = useState({
-    storiesCompleted: 0,
-    vocabularyEncountered: 0,
-    vocabularyCorrect: 0,
-    recentActivity: [],
-    learningStreak: 0,
+    storiesCompleted: 0, vocabularyEncountered: 0, vocabularyCorrect: 0, recentActivity: [], learningStreak: 0,
   });
+  const [customCount, setCustomCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useFocusEffect(
@@ -64,7 +45,12 @@ export default function ProgressScreen({ route }) {
       async function loadStats() {
         try {
           const result = await getLearnerStats(learnerId);
-          if (isActive) setStats(result);
+          const customs = await getCustomStories(); // Fetch custom stories count
+          
+          if (isActive) {
+            setStats(result);
+            setCustomCount(customs.length); // Save to state
+          }
         } catch (error) {
           console.error('Failed to load stats:', error);
         } finally {
@@ -76,7 +62,10 @@ export default function ProgressScreen({ route }) {
     }, [learnerId])
   );
 
-  const storiesPercent = TOTAL_STORIES > 0 ? (stats.storiesCompleted / TOTAL_STORIES) * 100 : 0;
+  // FIXED: Combined built-in stories and custom stories
+  const totalAvailableStories = allStories.length + customCount;
+  
+  const storiesPercent = totalAvailableStories > 0 ? (stats.storiesCompleted / totalAvailableStories) * 100 : 0;
   const vocabPercent = stats.vocabularyEncountered > 0
       ? (stats.vocabularyCorrect / stats.vocabularyEncountered) * 100
       : 0;
@@ -89,11 +78,7 @@ export default function ProgressScreen({ route }) {
           <Text style={styles.pageTitle}>My Progress</Text>
           <Text style={styles.pageSubtitle}>Your learning journey, one story at a time.</Text>
 
-          {/* Header Card */}
-          <LinearGradient
-            colors={[colors.primary, colors.primaryDark]}
-            style={styles.learnerCard}
-          >
+          <LinearGradient colors={[colors.primary, colors.primaryDark]} style={styles.learnerCard}>
             <View style={styles.learnerAvatar}>
               <Text style={styles.learnerEmoji}>🦉</Text>
             </View>
@@ -103,13 +88,12 @@ export default function ProgressScreen({ route }) {
             </View>
           </LinearGradient>
 
-          {/* Stats Grid */}
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
               <View style={styles.statIconContainer}>
                 <Ionicons name="book-outline" size={20} color={colors.primary} />
               </View>
-              <Text style={styles.statValue}>{stats.storiesCompleted}/{TOTAL_STORIES}</Text>
+              <Text style={styles.statValue}>{stats.storiesCompleted}/{totalAvailableStories}</Text>
               <Text style={styles.statLabel}>Stories Completed</Text>
             </View>
             <View style={styles.statCard}>
@@ -117,14 +101,15 @@ export default function ProgressScreen({ route }) {
                 <Ionicons name="list-outline" size={20} color={colors.primary} />
               </View>
               <Text style={styles.statValue}>{stats.vocabularyEncountered}</Text>
-              <Text style={styles.statLabel}>Vocabulary Encountered</Text>
+              {/* FIXED: Changed label to reflect actual tracking */}
+              <Text style={styles.statLabel}>Questions Answered</Text>
             </View>
             <View style={styles.statCard}>
               <View style={styles.statIconContainer}>
                 <Ionicons name="checkmark-circle-outline" size={20} color={colors.primary} />
               </View>
               <Text style={styles.statValue}>{stats.vocabularyCorrect}</Text>
-              <Text style={styles.statLabel}>Vocabulary Correct</Text>
+              <Text style={styles.statLabel}>Correct Answers</Text>
             </View>
             <View style={styles.statCard}>
               <View style={styles.statIconContainer}>
@@ -135,33 +120,20 @@ export default function ProgressScreen({ route }) {
             </View>
           </View>
 
-          {/* Progress Overview */}
           <View style={styles.overviewCard}>
             <Text style={styles.sectionTitle}>Progress Overview</Text>
-            
             <View style={styles.ringContainer}>
               <View style={styles.ringItem}>
-                <CircularProgress 
-                  size={110} 
-                  strokeWidth={12} 
-                  percentage={storiesPercent} 
-                  color={colors.primary} 
-                />
+                <CircularProgress size={110} strokeWidth={12} percentage={storiesPercent} color={colors.primary} />
                 <Text style={styles.ringLabel}>Stories</Text>
               </View>
               <View style={styles.ringItem}>
-                <CircularProgress 
-                  size={110} 
-                  strokeWidth={12} 
-                  percentage={vocabPercent} 
-                  color={colors.accent} 
-                />
-                <Text style={styles.ringLabel}>Vocabulary</Text>
+                <CircularProgress size={110} strokeWidth={12} percentage={vocabPercent} color={colors.accent} />
+                <Text style={styles.ringLabel}>Accuracy</Text>
               </View>
             </View>
           </View>
 
-          {/* Recent Activity */}
           <View style={styles.recentCard}>
             <Text style={styles.sectionTitle}>Recent Activity</Text>
             {stats.recentActivity.length === 0 ? (

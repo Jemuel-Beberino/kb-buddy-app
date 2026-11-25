@@ -14,7 +14,6 @@ import { storyCovers } from '../data/storyImages';
 import { getCustomStories } from '../database/storyService';
 import { getLearnerStoryStatuses } from '../database/progressService';
 
-// Soft teal-tinted shadows so cards and covers look like they float
 const floatingCard = {
   shadowColor: colors.primaryDark,
   shadowOffset: { width: 0, height: 10 },
@@ -42,11 +41,9 @@ export default function HomeScreen({ route, navigation }) {
   useFocusEffect(
     useCallback(() => {
       async function loadData() {
-        // Fetch custom stories
         const stories = await getCustomStories();
         setCustomStories(stories);
         
-        // Fetch learner's status for all stories
         const statuses = await getLearnerStoryStatuses(learnerId);
         setStoryStatuses(statuses);
       }
@@ -78,11 +75,8 @@ export default function HomeScreen({ route, navigation }) {
 
   const renderStoryCard = ({ item }) => {
     const coverImage = getCoverImage(item);
-    
-    // Determine status dynamically from the database
     const status = storyStatuses[item.id] || 'not-started';
     
-    // Style variables based on status
     let statusText = 'Not Started';
     let statusIcon = 'sparkles';
     let statusIconColor = 'rgba(255,255,255,0.9)';
@@ -92,13 +86,13 @@ export default function HomeScreen({ route, navigation }) {
     if (status === 'completed') {
       statusText = 'Completed';
       statusIcon = 'checkmark-circle';
-      statusIconColor = '#34D399'; // green
+      statusIconColor = '#34D399';
       actionText = 'Read Again';
       actionIcon = 'refresh';
     } else if (status === 'in-progress') {
       statusText = 'In Progress';
       statusIcon = 'bookmark';
-      statusIconColor = '#FBBF24'; // yellow
+      statusIconColor = '#FBBF24';
       actionText = 'Continue Reading';
       actionIcon = 'play';
     }
@@ -115,7 +109,6 @@ export default function HomeScreen({ route, navigation }) {
           })
         }
       >
-        {/* "Book cover": shadow wrapper + clipped inner so the cover floats */}
         <View style={styles.coverShadow}>
           <View style={styles.coverClip}>
             {coverImage ? (
@@ -126,7 +119,6 @@ export default function HomeScreen({ route, navigation }) {
               </LinearGradient>
             )}
 
-            {/* bottom scrim so white text stays readable on any cover */}
             <LinearGradient
               colors={['rgba(15,23,42,0)', 'rgba(15,23,42,0.88)']}
               style={styles.coverScrim}
@@ -188,10 +180,12 @@ export default function HomeScreen({ route, navigation }) {
 
         <View style={styles.appBar}>
           <View style={styles.appBarLeft}>
-            <View style={styles.miniOwl}>
-              <Text style={styles.miniOwlEmoji}>🦉</Text>
-            </View>
-            <Text style={styles.appBarTitle}>KB Buddy</Text>
+            {/* Updated Logo1.png size and removed the text */}
+            <Image 
+              source={require('../assets/images/logo1.png')} 
+              style={styles.appBarLogo} 
+              resizeMode="contain" 
+            />
           </View>
           <View style={styles.offlineModePill}>
             <Ionicons name="checkmark-circle" size={12} color={colors.primary} />
@@ -250,14 +244,21 @@ export default function HomeScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  appBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.xl, paddingVertical: spacing.md },
-  appBarLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  miniOwl: { width: 32, height: 32, borderRadius: radius.pill, backgroundColor: colors.primarySoft, justifyContent: 'center', alignItems: 'center' },
-  miniOwlEmoji: { fontSize: 18 },
-  appBarTitle: { fontSize: typography.heading3, fontWeight: '700', color: colors.primary },
+  
+  // App Bar adjustments
+  appBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.xl, paddingVertical: spacing.sm },
+  appBarLeft: { flexDirection: 'row', alignItems: 'center' },
+  
+  // New Logo Style
+  appBarLogo: { 
+    width: 160, 
+    height: 52, 
+    marginLeft: -spacing.sm // Pulls the logo slightly to the left edge for better alignment
+  },
+
   offlineModePill: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.surface, paddingHorizontal: spacing.md, paddingVertical: 6, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.primary },
   offlineModePillText: { fontSize: typography.tiny, fontWeight: '600', color: colors.primary },
-  pageHeader: { paddingHorizontal: spacing.xl, paddingTop: spacing.lg, paddingBottom: spacing.md },
+  pageHeader: { paddingHorizontal: spacing.xl, paddingTop: spacing.md, paddingBottom: spacing.md },
   pageTitle: { fontSize: typography.displayMedium, fontWeight: '700', color: colors.textPrimary },
   pageSubtitle: { fontSize: typography.body, color: colors.textSecondary, marginTop: 4 },
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: radius.md, paddingHorizontal: spacing.md, marginHorizontal: spacing.xl, marginTop: spacing.md, height: 48, borderWidth: 1, borderColor: colors.border, gap: spacing.sm },
@@ -270,8 +271,6 @@ const styles = StyleSheet.create({
   filterPillTextActive: { color: colors.textLight },
   listContainer: { paddingHorizontal: spacing.xl, paddingTop: spacing.md, paddingBottom: spacing.xxl },
 
-  // ---- Story card (redesigned) ----
-  // No overflow:hidden on the card itself, so its shadow isn't clipped on iOS.
   storyCard: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
@@ -284,7 +283,7 @@ const styles = StyleSheet.create({
     width: 132,
     height: 180,
     borderRadius: radius.lg,
-    backgroundColor: colors.surface, // needed for Android elevation
+    backgroundColor: colors.surface,
     ...floatingCover,
   },
   coverClip: { flex: 1, borderRadius: radius.lg, overflow: 'hidden' },

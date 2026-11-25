@@ -1,16 +1,14 @@
 // database/storyService.js
 import { getDatabase } from './db';
 
+// Helper to escape special regex characters
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 export async function saveCustomStory({
-  title,
-  titleBisaya,
-  description,
-  englishText,
-  bisayaText,
-  vocabWord,
-  vocabEnDef,
-  vocabBisDef,
-  quizData,
+  title, titleBisaya, description, englishText, bisayaText,
+  vocabWord, vocabEnDef, vocabBisDef, quizData,
 }) {
   const db = await getDatabase();
   const now = new Date().toISOString();
@@ -25,25 +23,20 @@ export async function saveCustomStory({
 }
 
 export async function updateCustomStory({
-  id,
-  title,
-  englishText,
-  bisayaText,
-  vocabWord,
-  vocabEnDef,
-  vocabBisDef,
-  quizData,
+  id, title, titleBisaya, description, englishText, bisayaText,
+  vocabWord, vocabEnDef, vocabBisDef, quizData,
 }) {
   const db = await getDatabase();
   const numericId = id.replace('custom_', '');
   const quizString = JSON.stringify(quizData);
 
+  // FIXED: Added titleBisaya and description to the UPDATE query
   await db.runAsync(
     `UPDATE custom_stories 
-     SET title = ?, englishText = ?, bisayaText = ?, 
+     SET title = ?, titleBisaya = ?, description = ?, englishText = ?, bisayaText = ?, 
          vocab_word = ?, vocab_en_def = ?, vocab_bis_def = ?, quiz_data = ?
      WHERE id = ?`,
-    [title, englishText, bisayaText, vocabWord, vocabEnDef, vocabBisDef, quizString, numericId]
+    [title, titleBisaya, description, englishText, bisayaText, vocabWord, vocabEnDef, vocabBisDef, quizString, numericId]
   );
 }
 
@@ -70,8 +63,14 @@ export async function getCustomStories() {
     let vocabArray = [];
 
     if (row.vocab_word && row.vocab_en_def) {
-      const regex = new RegExp(`\\b${row.vocab_word}\\b`, 'gi');
-      formattedEnglish = row.englishText.replace(regex, `[${row.vocab_word}]`);
+      // FIXED: Using escapeRegExp to prevent crashes on words like "C++"
+      const safeWord = escapeRegExp(row.vocab_word);
+      const regex = new RegExp(`\\b${safeWord}\\b`, 'gi');
+      
+      // Only replace if the word actually exists in the text
+      if (regex.test(formattedEnglish)) {
+        formattedEnglish = formattedEnglish.replace(regex, `[${row.vocab_word}]`);
+      }
 
       vocabArray.push({
         word: row.vocab_word,
@@ -95,17 +94,15 @@ export async function getCustomStories() {
       pageCount: 1,
       vocabularyCount: vocabArray.length,
       status: 'not-started',
-      description: row.description,
+      description: row.description || '',
       isCustom: true,
-      pages: [
-        {
-          pageNumber: 1,
-          image: 'custom/placeholder.png',
-          englishText: formattedEnglish,
-          bisayaText: row.bisayaText,
-          vocabulary: vocabArray,
-        }
-      ],
+      pages: [{
+        pageNumber: 1,
+        image: 'custom/placeholder.png',
+        englishText: formattedEnglish,
+        bisayaText: row.bisayaText,
+        vocabulary: vocabArray,
+      }],
       quiz: parsedQuiz,
     };
   });
@@ -113,6 +110,6 @@ export async function getCustomStories() {
 
 export async function deleteCustomStory(id) {
   const db = await getDatabase();
-  const numericId = id.replace('custom_', ''); 
+  const numericId = id.replace('custom_', '');
   await db.runAsync('DELETE FROM custom_stories WHERE id = ?', [numericId]);
 }

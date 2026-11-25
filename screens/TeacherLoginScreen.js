@@ -1,5 +1,4 @@
 // screens/TeacherLoginScreen.js
-
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -11,9 +10,10 @@ import {
   Platform,
   ScrollView,
   StatusBar,
+  Image, // <-- ADDED THIS IMPORT
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing, radius, shadows } from '../styles/theme';
 
 export default function TeacherLoginScreen({ navigation }) {
@@ -54,12 +54,12 @@ export default function TeacherLoginScreen({ navigation }) {
             </TouchableOpacity>
 
             <View style={styles.header}>
-              // Inside the header of TeacherLoginScreen.js:
-<Image 
-  source={require('../assets/images/logo.png')} 
-  style={{ width: 200, height: 80, marginBottom: 20 }} 
-  resizeMode="contain" 
-/>
+              {/* Removed the JSX comment that was breaking rendering here */}
+              <Image 
+                source={require('../assets/images/logo.png')} 
+                style={{ width: 200, height: 80, marginBottom: 20 }} 
+                resizeMode="contain" 
+              />
               <Text style={styles.title}>Teacher Portal</Text>
               <Text style={styles.subtitle}>Sign in to manage your classroom</Text>
             </View>
@@ -115,12 +115,6 @@ const styles = StyleSheet.create({
   scrollContent: { flexGrow: 1, padding: spacing.xl, justifyContent: 'center' },
   backButton: { position: 'absolute', top: spacing.xl, left: spacing.xl, padding: spacing.sm },
   header: { alignItems: 'center', marginBottom: spacing.xxl },
-  iconBadge: {
-    width: 64, height: 64, borderRadius: radius.lg,
-    backgroundColor: colors.primaryDark,
-    justifyContent: 'center', alignItems: 'center',
-    marginBottom: spacing.md, ...shadows.cardLarge,
-  },
   title: { fontSize: typography.displayMedium, fontWeight: '700', color: colors.textPrimary },
   subtitle: { fontSize: typography.body, color: colors.textSecondary, marginTop: 4 },
   formCard: {

@@ -1,17 +1,18 @@
 // navigation/TeacherTabs.js
-
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography } from '../styles/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; // <-- ADDED
 
 import TeacherDashboardScreen from '../screens/TeacherDashboardScreen';
 import TeacherAuthorScreen from '../screens/TeacherAuthorScreen';
-const PlaceholderScreen = () => null; 
 
 const Tab = createBottomTabNavigator();
 
 export default function TeacherTabs() {
+  const insets = useSafeAreaInsets(); // <-- GET PHONE INSETS
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -22,7 +23,9 @@ export default function TeacherTabs() {
           backgroundColor: colors.surface,
           borderTopWidth: 1,
           borderTopColor: colors.border,
-          height: 64, paddingBottom: 8, paddingTop: 8,
+          height: 64 + insets.bottom, // <-- ADDED INSETS
+          paddingBottom: 8 + insets.bottom, // <-- ADDED INSETS
+          paddingTop: 8,
         },
         tabBarLabelStyle: { fontSize: typography.tiny, fontWeight: '600' },
         tabBarIcon: ({ focused, color, size }) => {

@@ -18,7 +18,6 @@ export async function registerLearner(id, name, pin) {
     throw new Error('Learner ID already exists.');
   }
 
-  // Hash the PIN before saving
   const hashedPin = await hashPin(pin);
 
   await db.runAsync(
@@ -30,8 +29,6 @@ export async function registerLearner(id, name, pin) {
 
 export async function loginLearner(id, pin) {
   const db = await getDatabase();
-  
-  // Hash the input PIN to compare with the database hash
   const hashedPin = await hashPin(pin);
 
   const user = await db.getFirstAsync(
@@ -43,10 +40,4 @@ export async function loginLearner(id, pin) {
     throw new Error('Invalid Learner ID or PIN.');
   }
   return user;
-}
-
-// NEW FUNCTION
-export async function updateLearnerAvatar(id, uri) {
-  const db = await getDatabase();
-  await db.runAsync('UPDATE learners SET avatar_uri = ? WHERE id = ?', [uri, id]);
 }
