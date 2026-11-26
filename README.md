@@ -21,7 +21,7 @@
 Built with an **offline-first architecture**, learners can continue reading, answering quizzes, and tracking their streaks even without an internet connection—perfect for schools with limited connectivity.
 
 
-## KEY FETAURES
+## Key Features
 
 ### For Learners
 - **Bilingual Story Reader:** Read stories side-by-side in English and Bisaya.
