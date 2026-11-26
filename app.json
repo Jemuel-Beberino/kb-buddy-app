@@ -1,39 +1,22 @@
 {
   "expo": {
-    "name": "kb-buddy",
+    "name": "Klaro Basa Buddy",
     "slug": "kb-buddy",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/AppIcon.png",
     "userInterfaceStyle": "light",
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.jemuelbeberino.kbbuddy",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+    "splash": {
+      "image": "./assets/images/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FAFBF7"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      },
-      "package": "com.jemuelbeberino.kbbuddy"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-font",
-      "expo-status-bar",
-      "expo-sqlite"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "8eeac2da-aeed-4527-b0c9-1a2fd2647d6a"
+        "foregroundImage": "./assets/images/AppIcon.png",
+        "backgroundColor": "#FAFBF7"
       }
-    }
+    },
+    // ... keep the rest of your config
   }
 }
