@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/images/logo1.png" alt="KB Buddy Logo" width="300" />
+  <img src="assets/images/logo.png" alt="KB Buddy Logo" width="300" />
   <h1>KB Buddy: Klaro Basa </h1>
   <p><strong>An offline-first, bilingual EdTech app built on React Native and Expo.</strong></p>
   
