@@ -85,17 +85,18 @@ To make testing easier for reviewers, use these pre-configured accounts:
 
 ## Screenshots
 
-| Welcome | Student Dashboard | Story Library |
+| Student Login | Welcome Screen | Teacher Login|
 | :---: | :---: | :---: |
-| <img src="screenshots/Welcome%20Screen.jpe" width="220" /> | <img src="screenshots/Student%20Dashboard.jpe" width="220" /> | <img src="screenshots/Student%20Stories.jpe" width="220" /> |
+| <img src="screenshots/Student%20Login.jpe" width="220" /> | <img src="screenshots/Welcome%20Screen.jpe" width="220" /> | <img src="screenshots/TeacherLogin.jpe" width="220" /> |
 
-| Student Progress | Student Profile | Teacher Login |
+| Story Library | Reader Screen | Vocabulary Popup |
 | :---: | :---: | :---: |
-| <img src="screenshots/Student%20Progress.jpe" width="220" /> | <img src="screenshots/Student%20Profile.jpe" width="220" /> | <img src="screenshots/TeacherLogin.jpe" width="220" /> |
+| <img src="screenshots/Student%20Stories.jpe" width="220" /> | <img src="screenshots/Reader%20Screen.jpe" width="220" /> | <img src="screenshots/Vocabulary.jpe" width="220" /> |
 
-| Teacher Analytics | | |
+| Student Progress | Student Profile | Teacher Analytics |
 | :---: | :---: | :---: |
-| <img src="screenshots/Teachers%20Dashboard.jpe" width="220" /> | | |
+| <img src="screenshots/Student%20Progress.jpe" width="220" /> | <img src="screenshots/Student%20Profile.jpe" width="220" /> | <img src="screenshots/Teachers%20Dashboard.jpe" width="220" /> | 
+
 
 ## Author
 
