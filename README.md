@@ -87,15 +87,15 @@ To make testing easier for reviewers, use these pre-configured accounts:
 
 | Welcome | Student Dashboard | Story Library |
 | :---: | :---: | :---: |
-| <img src="screenshots/Welcome%20Screen.jpeg" width="220" /> | <img src="screenshots/Student%20Dashboard.jpeg" width="220" /> | <img src="screenshots/Student%20Stories.jpeg" width="220" /> |
+| <img src="screenshots/Welcome%20Screen.jpe" width="220" /> | <img src="screenshots/Student%20Dashboard.jpe" width="220" /> | <img src="screenshots/Student%20Stories.jpe" width="220" /> |
 
 | Student Progress | Student Profile | Teacher Login |
 | :---: | :---: | :---: |
-| <img src="screenshots/Student%20Progress.jpeg" width="220" /> | <img src="screenshots/Student%20Profile.jpeg" width="220" /> | <img src="screenshots/TeacherLogin.jpeg" width="220" /> |
+| <img src="screenshots/Student%20Progress.jpe" width="220" /> | <img src="screenshots/Student%20Profile.jpe" width="220" /> | <img src="screenshots/TeacherLogin.jpe" width="220" /> |
 
 | Teacher Analytics | | |
 | :---: | :---: | :---: |
-| <img src="screenshots/Teachers%20Dashboard.jpeg" width="220" /> | | |
+| <img src="screenshots/Teachers%20Dashboard.jpe" width="220" /> | | |
 
 ## Author
 
