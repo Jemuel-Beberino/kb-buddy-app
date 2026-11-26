@@ -1,6 +1,6 @@
 <div align="center">
   <img src="assets/images/logo.png" alt="KB Buddy Logo" width="300" />
-  <h1>KB Buddy: Klaro Basa </h1>
+  <h1>KB Buddy: Klaro Basa</h1>
   <p><strong>An offline-first, bilingual EdTech app built on React Native and Expo.</strong></p>
   
   <!-- Badges -->
@@ -19,7 +19,6 @@
 **KB Buddy** is a mobile educational application designed to improve reading comprehension and vocabulary for elementary learners. It features a dual-language (English & Bisaya) interactive reading experience and includes a dedicated Teacher Portal for monitoring progress and authoring custom lessons.
 
 Built with an **offline-first architecture**, learners can continue reading, answering quizzes, and tracking their streaks even without an internet connection—perfect for schools with limited connectivity.
-
 
 ## Key Features
 
@@ -57,3 +56,54 @@ Make sure you have Node.js and Expo CLI installed on your machine.
    ```bash
    git clone https://github.com/Jemuel-Beberino/kb-buddy-app.git
    cd kb-buddy-app
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npx expo start
+   ```
+
+4. **Run the app:**
+   - Scan the QR code with the **Expo Go** app on your physical device.
+   - Or press `a` to open in an Android Emulator.
+
+## Demo Credentials
+
+To make testing easier for reviewers, use these pre-configured accounts:
+
+| Role | ID / Email | PIN / Password |
+| :--- | :--- | :--- |
+| **Learner** | `KS-12345` | `1234` |
+| **Teacher** | `teacher@demo` | `admin123` |
+
+*(Note: The teacher login is currently hardcoded for demo purposes. The learner login is backed by the local SQLite database).*
+
+## Screenshots
+
+| Welcome | Student Dashboard | Story Library |
+| :---: | :---: | :---: |
+| <img src="screenshots/Welcome%20Screen.jpeg" width="220" /> | <img src="screenshots/Student%20Dashboard.jpeg" width="220" /> | <img src="screenshots/Student%20Stories.jpeg" width="220" /> |
+
+| Student Progress | Student Profile | Teacher Login |
+| :---: | :---: | :---: |
+| <img src="screenshots/Student%20Progress.jpeg" width="220" /> | <img src="screenshots/Student%20Profile.jpeg" width="220" /> | <img src="screenshots/TeacherLogin.jpeg" width="220" /> |
+
+| Teacher Analytics | | |
+| :---: | :---: | :---: |
+| <img src="screenshots/Teachers%20Dashboard.jpeg" width="220" /> | | |
+
+## Author
+
+**Jemuel Beberino**
+- Project Context: Software Engineering 2 & Mobile Computing 2
+- GitHub: [@Jemuel-Beberino](https://github.com/Jemuel-Beberino)
+
+---
+<div align="center">
+  <p>Built with love for Bisaya learners.</p>
+</div>
